@@ -1,0 +1,714 @@
+{
+  "metadata": {
+    "description": "Données agrégées marché immobilier Paris — couche Gold",
+    "sources": [
+      "DVF (data.gouv.fr)",
+      "OpenData Paris",
+      "INSEE Filosofi 2020"
+    ],
+    "date_production": "2026-05-18T15:00:20.034667",
+    "periode": "2021-2025"
+  },
+  "arrondissements": [
+    {
+      "num": 1,
+      "nom": "1er arrondissement",
+      "surnom": "Louvre – Palais-Royal",
+      "code_insee": "75101",
+      "prix_medians": {
+        "2021": 13514.0,
+        "2022": 13535.0,
+        "2023": 13260.0,
+        "2024": 12647.0,
+        "2025": 12500.0
+      },
+      "nb_transactions": {
+        "2021": 317,
+        "2022": 402,
+        "2023": 332,
+        "2024": 267,
+        "2025": 290
+      },
+      "logements_sociaux_pct": 4.3,
+      "nb_logements_sociaux": 877,
+      "revenu_median_uc": 35030.0,
+      "population": 15114,
+      "superficie_km2": 1.825,
+      "densite_hab_km2": 8282,
+      "crimes_pour_mille": 577.3,
+      "variation_pct_2023": -1.2,
+      "repartition_pieces": {
+        "T1": 30.2,
+        "T2": 32.0,
+        "T3": 19.5,
+        "T4": 9.5,
+        "T5+": 8.8
+      }
+    },
+    {
+      "num": 2,
+      "nom": "2ème arrondissement",
+      "surnom": "Bourse",
+      "code_insee": "75102",
+      "prix_medians": {
+        "2021": 12062.0,
+        "2022": 12128.0,
+        "2023": 11890.0,
+        "2024": 11435.0,
+        "2025": 11410.0
+      },
+      "nb_transactions": {
+        "2021": 509,
+        "2022": 526,
+        "2023": 426,
+        "2024": 362,
+        "2025": 399
+      },
+      "logements_sociaux_pct": 5.1,
+      "nb_logements_sociaux": 658,
+      "revenu_median_uc": 34050.0,
+      "population": 19847,
+      "superficie_km2": 0.991,
+      "densite_hab_km2": 20027,
+      "crimes_pour_mille": 232.3,
+      "variation_pct_2023": -0.2,
+      "repartition_pieces": {
+        "T1": 35.9,
+        "T2": 35.5,
+        "T3": 17.5,
+        "T4": 7.7,
+        "T5+": 3.4
+      }
+    },
+    {
+      "num": 3,
+      "nom": "3ème arrondissement",
+      "surnom": "Temple – Marais Nord",
+      "code_insee": "75103",
+      "prix_medians": {
+        "2021": 12759.0,
+        "2022": 12692.0,
+        "2023": 12496.0,
+        "2024": 11920.0,
+        "2025": 12200.0
+      },
+      "nb_transactions": {
+        "2021": 662,
+        "2022": 788,
+        "2023": 660,
+        "2024": 612,
+        "2025": 765
+      },
+      "logements_sociaux_pct": 7.8,
+      "nb_logements_sociaux": 1336,
+      "revenu_median_uc": 34800.0,
+      "population": 32179,
+      "superficie_km2": 1.171,
+      "densite_hab_km2": 27480,
+      "crimes_pour_mille": 135.8,
+      "variation_pct_2023": 2.3,
+      "repartition_pieces": {
+        "T1": 31.3,
+        "T2": 35.1,
+        "T3": 19.1,
+        "T4": 9.5,
+        "T5+": 5.0
+      }
+    },
+    {
+      "num": 4,
+      "nom": "4ème arrondissement",
+      "surnom": "Hôtel-de-Ville – Île de la Cité",
+      "code_insee": "75104",
+      "prix_medians": {
+        "2021": 13370.0,
+        "2022": 13462.0,
+        "2023": 13432.0,
+        "2024": 12846.0,
+        "2025": 13075.0
+      },
+      "nb_transactions": {
+        "2021": 538,
+        "2022": 601,
+        "2023": 511,
+        "2024": 485,
+        "2025": 592
+      },
+      "logements_sociaux_pct": 6.9,
+      "nb_logements_sociaux": 1677,
+      "revenu_median_uc": 33040.0,
+      "population": 27332,
+      "superficie_km2": 1.601,
+      "densite_hab_km2": 17072,
+      "crimes_pour_mille": 185.0,
+      "variation_pct_2023": 1.8,
+      "repartition_pieces": {
+        "T1": 28.6,
+        "T2": 32.5,
+        "T3": 20.4,
+        "T4": 10.3,
+        "T5+": 8.2
+      }
+    },
+    {
+      "num": 5,
+      "nom": "5ème arrondissement",
+      "surnom": "Panthéon – Quartier Latin",
+      "code_insee": "75105",
+      "prix_medians": {
+        "2021": 12995.0,
+        "2022": 13103.0,
+        "2023": 12581.0,
+        "2024": 11978.0,
+        "2025": 12000.0
+      },
+      "nb_transactions": {
+        "2021": 912,
+        "2022": 1061,
+        "2023": 893,
+        "2024": 842,
+        "2025": 984
+      },
+      "logements_sociaux_pct": 7.2,
+      "nb_logements_sociaux": 2194,
+      "revenu_median_uc": 35960.0,
+      "population": 55252,
+      "superficie_km2": 2.539,
+      "densite_hab_km2": 21761,
+      "crimes_pour_mille": 102.5,
+      "variation_pct_2023": 0.2,
+      "repartition_pieces": {
+        "T1": 32.0,
+        "T2": 32.3,
+        "T3": 19.3,
+        "T4": 9.2,
+        "T5+": 7.1
+      }
+    },
+    {
+      "num": 6,
+      "nom": "6ème arrondissement",
+      "surnom": "Luxembourg – Saint-Germain",
+      "code_insee": "75106",
+      "prix_medians": {
+        "2021": 15492.0,
+        "2022": 15458.0,
+        "2023": 15369.0,
+        "2024": 14935.0,
+        "2025": 14583.0
+      },
+      "nb_transactions": {
+        "2021": 845,
+        "2022": 983,
+        "2023": 757,
+        "2024": 754,
+        "2025": 829
+      },
+      "logements_sociaux_pct": 3.2,
+      "nb_logements_sociaux": 920,
+      "revenu_median_uc": 41750.0,
+      "population": 40389,
+      "superficie_km2": 2.153,
+      "densite_hab_km2": 18759,
+      "crimes_pour_mille": 133.8,
+      "variation_pct_2023": -2.4,
+      "repartition_pieces": {
+        "T1": 25.8,
+        "T2": 27.5,
+        "T3": 20.1,
+        "T4": 12.9,
+        "T5+": 13.6
+      }
+    },
+    {
+      "num": 7,
+      "nom": "7ème arrondissement",
+      "surnom": "Palais-Bourbon – Tour Eiffel",
+      "code_insee": "75107",
+      "prix_medians": {
+        "2021": 14995.0,
+        "2022": 15303.0,
+        "2023": 15000.0,
+        "2024": 14414.0,
+        "2025": 14413.0
+      },
+      "nb_transactions": {
+        "2021": 995,
+        "2022": 1143,
+        "2023": 929,
+        "2024": 882,
+        "2025": 994
+      },
+      "logements_sociaux_pct": 4.1,
+      "nb_logements_sociaux": 805,
+      "revenu_median_uc": 45380.0,
+      "population": 48015,
+      "superficie_km2": 4.09,
+      "densite_hab_km2": 11740,
+      "crimes_pour_mille": 108.3,
+      "variation_pct_2023": -2.9,
+      "repartition_pieces": {
+        "T1": 20.4,
+        "T2": 25.3,
+        "T3": 20.0,
+        "T4": 14.3,
+        "T5+": 20.0
+      }
+    },
+    {
+      "num": 8,
+      "nom": "8ème arrondissement",
+      "surnom": "Élysée – Champs-Élysées",
+      "code_insee": "75108",
+      "prix_medians": {
+        "2021": 13043.0,
+        "2022": 13043.0,
+        "2023": 12942.0,
+        "2024": 12374.0,
+        "2025": 12346.0
+      },
+      "nb_transactions": {
+        "2021": 659,
+        "2022": 782,
+        "2023": 581,
+        "2024": 673,
+        "2025": 725
+      },
+      "logements_sociaux_pct": 4.8,
+      "nb_logements_sociaux": 926,
+      "revenu_median_uc": 44100.0,
+      "population": 35317,
+      "superficie_km2": 3.88,
+      "densite_hab_km2": 9102,
+      "crimes_pour_mille": 318.7,
+      "variation_pct_2023": -0.2,
+      "repartition_pieces": {
+        "T1": 22.4,
+        "T2": 23.2,
+        "T3": 19.1,
+        "T4": 14.4,
+        "T5+": 20.9
+      }
+    },
+    {
+      "num": 9,
+      "nom": "9ème arrondissement",
+      "surnom": "Opéra – Pigalle",
+      "code_insee": "75109",
+      "prix_medians": {
+        "2021": 11886.0,
+        "2022": 11891.0,
+        "2023": 11458.0,
+        "2024": 10686.0,
+        "2025": 11042.0
+      },
+      "nb_transactions": {
+        "2021": 1334,
+        "2022": 1407,
+        "2023": 1056,
+        "2024": 1035,
+        "2025": 1203
+      },
+      "logements_sociaux_pct": 7.9,
+      "nb_logements_sociaux": 2097,
+      "revenu_median_uc": 37220.0,
+      "population": 57271,
+      "superficie_km2": 2.178,
+      "densite_hab_km2": 26295,
+      "crimes_pour_mille": 182.3,
+      "variation_pct_2023": 3.3,
+      "repartition_pieces": {
+        "T1": 26.2,
+        "T2": 28.1,
+        "T3": 23.1,
+        "T4": 12.6,
+        "T5+": 9.9
+      }
+    },
+    {
+      "num": 10,
+      "nom": "10ème arrondissement",
+      "surnom": "Entrepôt – Gare du Nord",
+      "code_insee": "75110",
+      "prix_medians": {
+        "2021": 10868.0,
+        "2022": 10667.0,
+        "2023": 10042.0,
+        "2024": 9333.0,
+        "2025": 9490.0
+      },
+      "nb_transactions": {
+        "2021": 1840,
+        "2022": 1935,
+        "2023": 1597,
+        "2024": 1325,
+        "2025": 1539
+      },
+      "logements_sociaux_pct": 14.8,
+      "nb_logements_sociaux": 4859,
+      "revenu_median_uc": 29470.0,
+      "population": 83873,
+      "superficie_km2": 2.892,
+      "densite_hab_km2": 29002,
+      "crimes_pour_mille": 214.1,
+      "variation_pct_2023": 1.7,
+      "repartition_pieces": {
+        "T1": 27.8,
+        "T2": 36.1,
+        "T3": 21.8,
+        "T4": 9.8,
+        "T5+": 4.5
+      }
+    },
+    {
+      "num": 11,
+      "nom": "11ème arrondissement",
+      "surnom": "Popincourt – Bastille",
+      "code_insee": "75111",
+      "prix_medians": {
+        "2021": 11176.0,
+        "2022": 11026.0,
+        "2023": 10419.0,
+        "2024": 9970.0,
+        "2025": 10089.0
+      },
+      "nb_transactions": {
+        "2021": 2875,
+        "2022": 3058,
+        "2023": 2440,
+        "2024": 2268,
+        "2025": 2547
+      },
+      "logements_sociaux_pct": 15.6,
+      "nb_logements_sociaux": 6665,
+      "revenu_median_uc": 30210.0,
+      "population": 138170,
+      "superficie_km2": 3.665,
+      "densite_hab_km2": 37700,
+      "crimes_pour_mille": 92.8,
+      "variation_pct_2023": 1.2,
+      "repartition_pieces": {
+        "T1": 28.8,
+        "T2": 39.9,
+        "T3": 21.1,
+        "T4": 7.2,
+        "T5+": 2.9
+      }
+    },
+    {
+      "num": 12,
+      "nom": "12ème arrondissement",
+      "surnom": "Reuilly – Bois de Vincennes",
+      "code_insee": "75112",
+      "prix_medians": {
+        "2021": 10392.0,
+        "2022": 10200.0,
+        "2023": 9583.0,
+        "2024": 8975.0,
+        "2025": 9091.0
+      },
+      "nb_transactions": {
+        "2021": 1819,
+        "2022": 2089,
+        "2023": 1725,
+        "2024": 1476,
+        "2025": 1680
+      },
+      "logements_sociaux_pct": 17.9,
+      "nb_logements_sociaux": 11816,
+      "revenu_median_uc": 29940.0,
+      "population": 138024,
+      "superficie_km2": 16.315,
+      "densite_hab_km2": 8460,
+      "crimes_pour_mille": 127.4,
+      "variation_pct_2023": 1.3,
+      "repartition_pieces": {
+        "T1": 24.2,
+        "T2": 37.6,
+        "T3": 24.2,
+        "T4": 10.3,
+        "T5+": 3.7
+      }
+    },
+    {
+      "num": 13,
+      "nom": "13ème arrondissement",
+      "surnom": "Gobelins – Chinatown",
+      "code_insee": "75113",
+      "prix_medians": {
+        "2021": 10000.0,
+        "2022": 9897.0,
+        "2023": 9146.0,
+        "2024": 8778.0,
+        "2025": 8782.0
+      },
+      "nb_transactions": {
+        "2021": 1715,
+        "2022": 1763,
+        "2023": 1452,
+        "2024": 1428,
+        "2025": 1565
+      },
+      "logements_sociaux_pct": 26.7,
+      "nb_logements_sociaux": 15700,
+      "revenu_median_uc": 25670.0,
+      "population": 181271,
+      "superficie_km2": 7.149,
+      "densite_hab_km2": 25356,
+      "crimes_pour_mille": 84.1,
+      "variation_pct_2023": -4.6,
+      "repartition_pieces": {
+        "T1": 29.2,
+        "T2": 35.9,
+        "T3": 23.8,
+        "T4": 8.3,
+        "T5+": 2.9
+      }
+    },
+    {
+      "num": 14,
+      "nom": "14ème arrondissement",
+      "surnom": "Observatoire – Montparnasse",
+      "code_insee": "75114",
+      "prix_medians": {
+        "2021": 10864.0,
+        "2022": 10645.0,
+        "2023": 10110.0,
+        "2024": 9417.0,
+        "2025": 9615.0
+      },
+      "nb_transactions": {
+        "2021": 1757,
+        "2022": 1847,
+        "2023": 1568,
+        "2024": 1464,
+        "2025": 1685
+      },
+      "logements_sociaux_pct": 19.2,
+      "nb_logements_sociaux": 9005,
+      "revenu_median_uc": 29460.0,
+      "population": 136455,
+      "superficie_km2": 5.615,
+      "densite_hab_km2": 24302,
+      "crimes_pour_mille": 81.3,
+      "variation_pct_2023": 2.1,
+      "repartition_pieces": {
+        "T1": 26.4,
+        "T2": 36.6,
+        "T3": 23.9,
+        "T4": 9.4,
+        "T5+": 3.7
+      }
+    },
+    {
+      "num": 15,
+      "nom": "15ème arrondissement",
+      "surnom": "Vaugirard – Convention",
+      "code_insee": "75115",
+      "prix_medians": {
+        "2021": 10833.0,
+        "2022": 10652.0,
+        "2023": 10069.0,
+        "2024": 9571.0,
+        "2025": 9583.0
+      },
+      "nb_transactions": {
+        "2021": 3602,
+        "2022": 3792,
+        "2023": 3062,
+        "2024": 2863,
+        "2025": 3243
+      },
+      "logements_sociaux_pct": 15.8,
+      "nb_logements_sociaux": 12855,
+      "revenu_median_uc": 32780.0,
+      "population": 229713,
+      "superficie_km2": 8.495,
+      "densite_hab_km2": 27041,
+      "crimes_pour_mille": 76.1,
+      "variation_pct_2023": 0.1,
+      "repartition_pieces": {
+        "T1": 25.9,
+        "T2": 33.9,
+        "T3": 23.7,
+        "T4": 11.5,
+        "T5+": 5.0
+      }
+    },
+    {
+      "num": 16,
+      "nom": "16ème arrondissement",
+      "surnom": "Passy – Auteuil – Bois de Boulogne",
+      "code_insee": "75116",
+      "prix_medians": {
+        "2021": 11838.0,
+        "2022": 12013.0,
+        "2023": 11550.0,
+        "2024": 11009.0,
+        "2025": 11111.0
+      },
+      "nb_transactions": {
+        "2021": 2879,
+        "2022": 3041,
+        "2023": 2434,
+        "2024": 2130,
+        "2025": 2524
+      },
+      "logements_sociaux_pct": 6.7,
+      "nb_logements_sociaux": 4834,
+      "revenu_median_uc": 41550.0,
+      "population": 159386,
+      "superficie_km2": 16.373,
+      "densite_hab_km2": 9735,
+      "crimes_pour_mille": 86.0,
+      "variation_pct_2023": 0.9,
+      "repartition_pieces": {
+        "T1": 20.0,
+        "T2": 22.9,
+        "T3": 21.8,
+        "T4": 16.9,
+        "T5+": 18.4
+      }
+    },
+    {
+      "num": 17,
+      "nom": "17ème arrondissement",
+      "surnom": "Batignolles – Ternes",
+      "code_insee": "75117",
+      "prix_medians": {
+        "2021": 11470.0,
+        "2022": 11429.0,
+        "2023": 10875.0,
+        "2024": 10201.0,
+        "2025": 10323.0
+      },
+      "nb_transactions": {
+        "2021": 2992,
+        "2022": 3219,
+        "2023": 2525,
+        "2024": 2308,
+        "2025": 2666
+      },
+      "logements_sociaux_pct": 14.3,
+      "nb_logements_sociaux": 9913,
+      "revenu_median_uc": 33390.0,
+      "population": 159212,
+      "superficie_km2": 5.669,
+      "densite_hab_km2": 28085,
+      "crimes_pour_mille": 80.8,
+      "variation_pct_2023": 1.2,
+      "repartition_pieces": {
+        "T1": 22.9,
+        "T2": 33.4,
+        "T3": 23.1,
+        "T4": 11.4,
+        "T5+": 9.1
+      }
+    },
+    {
+      "num": 18,
+      "nom": "18ème arrondissement",
+      "surnom": "Butte-Montmartre – Clignancourt",
+      "code_insee": "75118",
+      "prix_medians": {
+        "2021": 10417.0,
+        "2022": 10139.0,
+        "2023": 9519.0,
+        "2024": 8810.0,
+        "2025": 9024.0
+      },
+      "nb_transactions": {
+        "2021": 3609,
+        "2022": 3913,
+        "2023": 3083,
+        "2024": 2654,
+        "2025": 3291
+      },
+      "logements_sociaux_pct": 23.8,
+      "nb_logements_sociaux": 12401,
+      "revenu_median_uc": 24910.0,
+      "population": 183127,
+      "superficie_km2": 5.996,
+      "densite_hab_km2": 30542,
+      "crimes_pour_mille": 129.0,
+      "variation_pct_2023": 2.4,
+      "repartition_pieces": {
+        "T1": 26.2,
+        "T2": 43.4,
+        "T3": 22.4,
+        "T4": 6.2,
+        "T5+": 1.8
+      }
+    },
+    {
+      "num": 19,
+      "nom": "19ème arrondissement",
+      "surnom": "Buttes-Chaumont – La Villette",
+      "code_insee": "75119",
+      "prix_medians": {
+        "2021": 9443.0,
+        "2022": 9222.0,
+        "2023": 8773.0,
+        "2024": 7915.0,
+        "2025": 8202.0
+      },
+      "nb_transactions": {
+        "2021": 1920,
+        "2022": 1960,
+        "2023": 1633,
+        "2024": 1416,
+        "2025": 1627
+      },
+      "logements_sociaux_pct": 34.5,
+      "nb_logements_sociaux": 12170,
+      "revenu_median_uc": 22870.0,
+      "population": 178691,
+      "superficie_km2": 6.793,
+      "densite_hab_km2": 26305,
+      "crimes_pour_mille": 105.8,
+      "variation_pct_2023": 3.6,
+      "repartition_pieces": {
+        "T1": 27.0,
+        "T2": 38.5,
+        "T3": 23.4,
+        "T4": 8.6,
+        "T5+": 2.5
+      }
+    },
+    {
+      "num": 20,
+      "nom": "20ème arrondissement",
+      "surnom": "Ménilmontant – Belleville",
+      "code_insee": "75120",
+      "prix_medians": {
+        "2021": 9692.0,
+        "2022": 9423.0,
+        "2023": 8837.0,
+        "2024": 8321.0,
+        "2025": 8409.0
+      },
+      "nb_transactions": {
+        "2021": 2124,
+        "2022": 2392,
+        "2023": 1899,
+        "2024": 1795,
+        "2025": 2092
+      },
+      "logements_sociaux_pct": 27.9,
+      "nb_logements_sociaux": 14836,
+      "revenu_median_uc": 23570.0,
+      "population": 185140,
+      "superficie_km2": 5.983,
+      "densite_hab_km2": 30944,
+      "crimes_pour_mille": 64.7,
+      "variation_pct_2023": 1.1,
+      "repartition_pieces": {
+        "T1": 28.3,
+        "T2": 38.5,
+        "T3": 22.9,
+        "T4": 8.2,
+        "T5+": 2.2
+      }
+    }
+  ]
+}

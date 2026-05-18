@@ -1,0 +1,8 @@
+[build]
+  publish = "frontend"
+
+# Redirige toutes les routes vers index.html (SPA)
+[[redirects]]
+  from = "/*"
+  to   = "/index.html"
+  status = 200

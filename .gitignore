@@ -1,0 +1,24 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Données brutes et silver (volumineuses, régénérables)
+data/bronze/
+data/silver/
+
+# Gold versionnée (garder dans git)
+!data/gold/
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Urban Data Explorer — Marché Immobilier Paris</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230d1b4b'/><text x='50%25' y='62%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='20' font-family='sans-serif' font-weight='700'>U</text></svg>" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='20' fill='%230d1b4b'/><text x='50%25' y='62%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='110' font-family='sans-serif' font-weight='700'>U</text></svg>" />
+
+  <!-- Leaflet.js (carte) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Chart.js (graphiques) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ── HEADER ──────────────────────────────────────────────────────────── -->
+<header class="site-header">
+  <div class="header-left">
+    <div class="header-brand">
+      <span class="header-accent"></span>
+      <div>
+        <h1>Urban Data Explorer</h1>
+        <p class="subtitle">Marché immobilier parisien &mdash; 20 arrondissements</p>
+      </div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="badge source-badge">DVF &middot; OpenData Paris &middot; INSEE</span>
+    <span class="badge year-badge" id="current-year-badge">2024</span>
+  </div>
+</header>
+
+<!-- ── TOOLBAR ─────────────────────────────────────────────────────────── -->
+<div class="toolbar">
+  <!-- Indicateur affiché sur la carte -->
+  <div class="control-group">
+    <label>Indicateur carte</label>
+    <select id="indicator-select">
+      <option value="prix_m2" selected>Prix médian (€/m²)</option>
+      <option value="logements_sociaux_pct">Logements sociaux (%)</option>
+      <option value="revenu_median_uc">Revenu médian (€/UC)</option>
+      <option value="crimes_pour_mille">Criminalité (/1 000 hab.)</option>
+      <option value="densite_hab_km2">Densité (hab./km²)</option>
+      <option value="variation_pct">Variation annuelle (%)</option>
+    </select>
+  </div>
+
+  <!-- Année + bouton animation -->
+  <div class="control-group">
+    <label>Année <span id="year-note" class="year-note hidden">— Prix médian uniquement</span></label>
+    <div class="year-slider-wrapper">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="range" id="year-slider" min="2021" max="2025" value="2024" step="1" />
+        <button id="play-btn" class="btn-play" title="Animer l'évolution temporelle">▶</button>
+      </div>
+      <div class="year-labels">
+        <span>2021</span><span>2022</span><span>2023</span><span>2024</span><span>2025</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mode comparaison -->
+  <div class="control-group">
+    <label>Mode comparaison</label>
+    <button id="compare-btn" class="btn-compare">Activer</button>
+    <span id="compare-hint" class="compare-hint hidden">Cliquez 2 arrondissements</span>
+  </div>
+</div>
+
+<!-- ── MAIN LAYOUT ──────────────────────────────────────────────────────── -->
+<div class="main-layout">
+
+  <!-- Carte -->
+  <div class="map-container">
+    <div id="map"></div>
+    <div class="map-legend" id="map-legend"></div>
+    <div class="map-info" id="map-info">
+      <p>Survolez un arrondissement pour voir ses indicateurs</p>
+    </div>
+  </div>
+
+  <!-- Panneau latéral -->
+  <aside class="side-panel">
+
+    <!-- Onglets -->
+    <div class="panel-tabs">
+      <button class="tab-btn active" data-tab="overview">Aperçu</button>
+      <button class="tab-btn" data-tab="ranking">Classement</button>
+    </div>
+
+    <!-- Onglet Aperçu -->
+    <div class="tab-content" id="tab-overview">
+      <!-- Stats globales Paris -->
+      <div class="panel-section" id="panel-global">
+        <h3>Paris — Vue d'ensemble <span id="panel-year">2023</span></h3>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpi-prix-moyen">—</div>
+            <div class="kpi-label">Prix médian moyen</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpi-arr-max">—</div>
+            <div class="kpi-label">Arrondissement le + cher</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpi-arr-min">—</div>
+            <div class="kpi-label">Arrondissement le - cher</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="kpi-variation">—</div>
+            <div class="kpi-label">Variation moy. année précédente</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Détail arrondissement sélectionné -->
+      <div class="panel-section hidden" id="panel-detail">
+        <h3 id="detail-title">Arrondissement</h3>
+        <div class="detail-grid">
+          <div class="detail-item"><span class="di-label">Prix/m²</span><span class="di-value" id="d-prix">—</span></div>
+          <div class="detail-item"><span class="di-label">Variation annuelle</span><span class="di-value" id="d-variation">—</span></div>
+          <div class="detail-item"><span class="di-label">Logements sociaux</span><span class="di-value" id="d-logsoc">—</span></div>
+          <div class="detail-item"><span class="di-label">Revenu médian/UC</span><span class="di-value" id="d-revenu">—</span></div>
+          <div class="detail-item"><span class="di-label">Population</span><span class="di-value" id="d-pop">—</span></div>
+          <div class="detail-item"><span class="di-label">Densité</span><span class="di-value" id="d-densite">—</span></div>
+          <div class="detail-item"><span class="di-label">Criminalité/1000</span><span class="di-value" id="d-crime">—</span></div>
+        </div>
+        <!-- Chart timeline -->
+        <div class="chart-wrapper">
+          <canvas id="chart-timeline"></canvas>
+        </div>
+        <!-- Chart répartition pièces -->
+        <div class="chart-wrapper">
+          <canvas id="chart-pieces"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Onglet Classement -->
+    <div class="tab-content hidden" id="tab-ranking">
+      <div class="panel-section">
+        <h3>Classement prix/m² <span id="ranking-year">2023</span></h3>
+        <div id="ranking-list"></div>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- ── COMPARAISON (modal) ──────────────────────────────────────────────── -->
+<div class="compare-overlay hidden" id="compare-overlay">
+  <div class="compare-modal">
+    <button class="compare-close" id="compare-close">✕</button>
+    <h2>Comparaison</h2>
+    <p class="compare-legend-note">
+      <span class="cls-better">■</span> Favorable pour l'habitant &ensp;
+      <span class="cls-worse">■</span> Moins favorable &ensp;
+      <span class="cls-neutral">—</span> Neutre
+      <span class="cls-criteria"> &nbsp;·&nbsp; Prix élevé = moins favorable &nbsp;·&nbsp; Revenus élevés = favorable &nbsp;·&nbsp; Criminalité élevée = moins favorable</span>
+    </p>
+    <div class="compare-grid" id="compare-grid">
+      <div class="compare-col" id="compare-col-1"></div>
+      <div class="compare-middle">
+        <canvas id="chart-compare-timeline"></canvas>
+      </div>
+      <div class="compare-col" id="compare-col-2"></div>
+    </div>
+    <div class="compare-radar-wrapper">
+      <canvas id="chart-compare-radar"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ───────────────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <span>Sources :
+    <a class="footer-link" href="https://www.data.gouv.fr/fr/datasets/demandes-de-valeurs-foncieres/" target="_blank" rel="noopener">DVF data.gouv.fr</a> &middot;
+    <a class="footer-link" href="https://opendata.paris.fr/explore/dataset/arrondissements/" target="_blank" rel="noopener">OpenData Paris</a> &middot;
+    <a class="footer-link" href="https://www.insee.fr/fr/statistiques/6036907" target="_blank" rel="noopener">INSEE Filosofi 2020</a> &middot;
+    <a class="footer-link" href="https://www.data.gouv.fr/datasets/bases-statistiques-communale-departementale-et-regionale-de-la-delinquance-enregistree-par-la-police-et-la-gendarmerie-nationales" target="_blank" rel="noopener">SSMSI</a>
+  </span>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
