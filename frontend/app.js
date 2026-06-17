@@ -10,7 +10,7 @@
 // ex: "https://urban-data-explorer-api.onrender.com"
 const API_BASE = ["localhost", "127.0.0.1", ""].includes(window.location.hostname)
   ? "http://localhost:8000"
-  : "https://urban-data-explorer-api.onrender.com";
+  : "https://urban-data-explorer-1.onrender.com";
 const ANNEES = [2021, 2022, 2023, 2024, 2025];
 
 // Année de référence par indicateur (hors prix_m2 qui a un historique 2021-2025)
