@@ -192,7 +192,7 @@ def merge_gold_table(
         # Taux officiel RPLS 2022 (source tracée dans LOGSOC_PCT_RPLS)
         base["logements_sociaux_pct"] = LOGSOC_PCT_RPLS.get(arr, base.get("logements_sociaux_pct"))
 
-        base["variation_pct_2023"] = calculer_variation(prix_medians, arr) or base.get("variation_pct_2023")
+        base["variation_pct"] = calculer_variation(prix_medians, arr) or base.get("variation_pct")
 
         # Criminalité SSMSI — taux réel par arrondissement
         if crimes is not None and not crimes.empty and "crimes_pour_mille" in crimes.columns:
@@ -277,7 +277,7 @@ def export_gold(arrondissements: list) -> None:
                     props["population"]            = a.get("population")
                     props["densite_hab_km2"]       = a.get("densite_hab_km2")
                     props["crimes_pour_mille"]     = a.get("crimes_pour_mille")
-                    props["variation_pct"]         = a.get("variation_pct_2023")
+                    props["variation_pct"]         = a.get("variation_pct")
                     props["superficie_km2"]        = a.get("superficie_km2")
                 except (ValueError, TypeError):
                     pass

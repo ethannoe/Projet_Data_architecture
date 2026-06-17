@@ -67,6 +67,9 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--b
   background: var(--blue-500); color: var(--white);
   font-size: 0.9rem; padding: 4px 14px;
 }
+.data-source-badge { background: rgba(255,255,255,0.10); color: var(--blue-200); font-size: 0.68rem; }
+.data-source-badge.badge-api     { background: rgba(22,163,74,0.25); color: #86efac; }
+.data-source-badge.badge-offline { background: rgba(217,119,6,0.25); color: #fcd34d; }
 
 /* ── Toolbar ──────────────────────────────────────────────────────────── */
 .toolbar {

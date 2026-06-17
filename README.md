@@ -1,6 +1,6 @@
 # Urban Data Explorer — Marché Immobilier Parisien
 
-**Auteur : Meriem Bennacer**
+
 Projet Data, Développement et Architecture de Données
 
 ---
@@ -10,7 +10,7 @@ Projet Data, Développement et Architecture de Données
 Urban Data Explorer est une plateforme complète (pipeline + API + dashboard) permettant d'explorer le marché immobilier parisien arrondissement par arrondissement.
 
 Le dashboard interactif affiche, pour chacun des 20 arrondissements :
-- Prix médian au m² (2019–2023) depuis les transactions DVF
+- Prix médian au m² (2021–2025) depuis les transactions DVF
 - Évolution temporelle et variation annuelle
 - Part de logements sociaux
 - Répartition typologique (T1 → T5+)
@@ -94,7 +94,7 @@ python run_pipeline.py
 
 Le pipeline récupère les données depuis les APIs publiques, les nettoie et produit `data/gold/arrondissements_enrichis.json`.
 
-> **Note :** La zone Gold est déjà versionnée dans ce dépôt avec des données réelles 2019–2023. Relancer le pipeline n'est nécessaire que pour mettre à jour les données.
+> **Note :** La zone Gold est déjà versionnée dans ce dépôt avec des données réelles 2021–2025. Relancer le pipeline n'est nécessaire que pour mettre à jour les données.
 
 ### 3. Démarrer l'API backend
 
@@ -119,7 +119,7 @@ Ouvrir `frontend/index.html` directement dans un navigateur **ou** accéder à `
 | `GET /arrondissements` | Tous les arrondissements avec indicateurs |
 | `GET /arrondissements/{num}` | Détail d'un arrondissement (1–20) |
 | `GET /prix?annee=2023` | Prix médians par arrondissement pour une année |
-| `GET /prix/{num}` | Série temporelle 2019–2023 pour un arrondissement |
+| `GET /prix/{num}` | Série temporelle 2021–2025 pour un arrondissement |
 | `GET /timeline?arr=6` | Évolution temporelle (Paris ou arrondissement) |
 | `GET /comparaison?arr1=1&arr2=6` | Comparaison de deux arrondissements |
 | `GET /logements-sociaux` | Part de logements sociaux triée |
@@ -133,7 +133,7 @@ Ouvrir `frontend/index.html` directement dans un navigateur **ou** accéder à `
 
 - **Carte choroplèthe** : couleurs selon l'indicateur sélectionné (prix, logements sociaux, revenus, criminalité, densité)
 - **Sélecteur d'indicateur** : basculer entre 5 indicateurs en temps réel
-- **Slider d'année** : visualiser l'évolution 2019 → 2023
+- **Slider d'année** : visualiser l'évolution 2021 → 2025
 - **Timeline animée** : animation automatique année par année
 - **Survol / clic** : affiche les indicateurs de l'arrondissement
 - **Mode comparaison** : sélectionner deux arrondissements, comparaison avec radar chart

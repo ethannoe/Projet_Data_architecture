@@ -8,7 +8,7 @@
 // En développement local : "http://localhost:8000"
 // En production (après déploiement Render) : remplacer par l'URL Render réelle
 // ex: "https://urban-data-explorer-api.onrender.com"
-const API_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+const API_BASE = ["localhost", "127.0.0.1", ""].includes(window.location.hostname)
   ? "http://localhost:8000"
   : "https://urban-data-explorer-api.onrender.com";
 const ANNEES = [2021, 2022, 2023, 2024, 2025];
@@ -33,30 +33,33 @@ const ARR_CENTROIDS = {
   19: [48.8808, 2.3817],  20: [48.8643, 2.4001],
 };
 
-// ── Données Gold embarquées ────────────────────────────────────────────────
-// Source : DVF data.gouv.fr · OpenData Paris · INSEE Filosofi 2020
+// ── Données Gold embarquées (FALLBACK) ────────────────────────────────────
+// Ces données sont une copie statique de la couche Gold (DVF 2021-2025).
+// Elles ne sont utilisées QUE si l'API backend est inaccessible (hors ligne,
+// déploiement non encore effectué, timeout réseau).
+// En conditions normales, loadGoldData() les écrase avec la réponse de l'API.
 let GOLD_DATA = [
   // Source: DVF data.gouv.fr (2021-2025) · INSEE DGFiP · SSMSI 2025 · OpenData Paris
-  { num:1,  nom:"1er arrondissement",  surnom:"Louvre – Palais-Royal",             prix_medians:{2021:13514,2022:13535,2023:13260,2024:12647,2025:12500}, logements_sociaux_pct:4.3,  nb_logements_sociaux:877,   revenu_median_uc:35030, population:15114,  superficie_km2:1.825,  densite_hab_km2:8282,  crimes_pour_mille:577.3, variation_pct_2023:-1.2, repartition_pieces:{T1:30.2,T2:32.0,T3:19.5,T4:9.5,"T5+":8.8} },
-  { num:2,  nom:"2ème arrondissement", surnom:"Bourse",                             prix_medians:{2021:12062,2022:12128,2023:11890,2024:11435,2025:11410}, logements_sociaux_pct:5.1,  nb_logements_sociaux:658,   revenu_median_uc:34050, population:19847,  superficie_km2:0.991,  densite_hab_km2:20027, crimes_pour_mille:232.3, variation_pct_2023:-0.2, repartition_pieces:{T1:35.9,T2:35.5,T3:17.5,T4:7.7,"T5+":3.4} },
-  { num:3,  nom:"3ème arrondissement", surnom:"Temple – Marais Nord",               prix_medians:{2021:12759,2022:12692,2023:12496,2024:11920,2025:12200}, logements_sociaux_pct:7.8,  nb_logements_sociaux:1336,  revenu_median_uc:34800, population:32179,  superficie_km2:1.171,  densite_hab_km2:27480, crimes_pour_mille:135.8, variation_pct_2023:2.3,  repartition_pieces:{T1:31.3,T2:35.1,T3:19.1,T4:9.5,"T5+":5.0} },
-  { num:4,  nom:"4ème arrondissement", surnom:"Hôtel-de-Ville – Île de la Cité",    prix_medians:{2021:13370,2022:13462,2023:13432,2024:12846,2025:13075}, logements_sociaux_pct:6.9,  nb_logements_sociaux:1677,  revenu_median_uc:33040, population:27332,  superficie_km2:1.601,  densite_hab_km2:17072, crimes_pour_mille:185.0, variation_pct_2023:1.8,  repartition_pieces:{T1:28.6,T2:32.5,T3:20.4,T4:10.3,"T5+":8.2} },
-  { num:5,  nom:"5ème arrondissement", surnom:"Panthéon – Quartier Latin",          prix_medians:{2021:12995,2022:13103,2023:12581,2024:11978,2025:12000}, logements_sociaux_pct:7.2,  nb_logements_sociaux:2194,  revenu_median_uc:35960, population:55252,  superficie_km2:2.539,  densite_hab_km2:21761, crimes_pour_mille:102.5, variation_pct_2023:0.2,  repartition_pieces:{T1:32.0,T2:32.3,T3:19.3,T4:9.2,"T5+":7.1} },
-  { num:6,  nom:"6ème arrondissement", surnom:"Luxembourg – Saint-Germain",         prix_medians:{2021:15492,2022:15458,2023:15369,2024:14935,2025:14583}, logements_sociaux_pct:3.2,  nb_logements_sociaux:920,   revenu_median_uc:41750, population:40389,  superficie_km2:2.153,  densite_hab_km2:18759, crimes_pour_mille:133.8, variation_pct_2023:-2.4, repartition_pieces:{T1:25.8,T2:27.5,T3:20.1,T4:12.9,"T5+":13.6} },
-  { num:7,  nom:"7ème arrondissement", surnom:"Palais-Bourbon – Tour Eiffel",       prix_medians:{2021:14995,2022:15303,2023:15000,2024:14414,2025:14413}, logements_sociaux_pct:4.1,  nb_logements_sociaux:805,   revenu_median_uc:45380, population:48015,  superficie_km2:4.09,   densite_hab_km2:11740, crimes_pour_mille:108.3, variation_pct_2023:-2.9, repartition_pieces:{T1:20.4,T2:25.3,T3:20.0,T4:14.3,"T5+":20.0} },
-  { num:8,  nom:"8ème arrondissement", surnom:"Élysée – Champs-Élysées",            prix_medians:{2021:13043,2022:13043,2023:12942,2024:12374,2025:12346}, logements_sociaux_pct:4.8,  nb_logements_sociaux:926,   revenu_median_uc:44100, population:35317,  superficie_km2:3.88,   densite_hab_km2:9102,  crimes_pour_mille:318.7, variation_pct_2023:-0.2, repartition_pieces:{T1:22.4,T2:23.2,T3:19.1,T4:14.4,"T5+":20.9} },
-  { num:9,  nom:"9ème arrondissement", surnom:"Opéra – Pigalle",                    prix_medians:{2021:11886,2022:11891,2023:11458,2024:10686,2025:11042}, logements_sociaux_pct:7.9,  nb_logements_sociaux:2097,  revenu_median_uc:37220, population:57271,  superficie_km2:2.178,  densite_hab_km2:26295, crimes_pour_mille:182.3, variation_pct_2023:3.3,  repartition_pieces:{T1:26.2,T2:28.1,T3:23.1,T4:12.6,"T5+":9.9} },
-  { num:10, nom:"10ème arrondissement",surnom:"Entrepôt – Gare du Nord",            prix_medians:{2021:10868,2022:10667,2023:10042,2024:9333, 2025:9490},  logements_sociaux_pct:14.8, nb_logements_sociaux:4859,  revenu_median_uc:29470, population:83873,  superficie_km2:2.892,  densite_hab_km2:29002, crimes_pour_mille:214.1, variation_pct_2023:1.7,  repartition_pieces:{T1:27.8,T2:36.1,T3:21.8,T4:9.8,"T5+":4.5} },
-  { num:11, nom:"11ème arrondissement",surnom:"Popincourt – Bastille",              prix_medians:{2021:11176,2022:11026,2023:10419,2024:9970, 2025:10089}, logements_sociaux_pct:15.6, nb_logements_sociaux:6665,  revenu_median_uc:30210, population:138170, superficie_km2:3.665,  densite_hab_km2:37700, crimes_pour_mille:92.8,  variation_pct_2023:1.2,  repartition_pieces:{T1:28.8,T2:39.9,T3:21.1,T4:7.2,"T5+":2.9} },
-  { num:12, nom:"12ème arrondissement",surnom:"Reuilly – Bois de Vincennes",        prix_medians:{2021:10392,2022:10200,2023:9583, 2024:8975, 2025:9091},  logements_sociaux_pct:17.9, nb_logements_sociaux:11816, revenu_median_uc:29940, population:138024, superficie_km2:16.315, densite_hab_km2:8460,  crimes_pour_mille:127.4, variation_pct_2023:1.3,  repartition_pieces:{T1:24.2,T2:37.6,T3:24.2,T4:10.3,"T5+":3.7} },
-  { num:13, nom:"13ème arrondissement",surnom:"Gobelins – Chinatown",               prix_medians:{2021:10000,2022:9897, 2023:9146, 2024:8778, 2025:8782},  logements_sociaux_pct:26.7, nb_logements_sociaux:15700, revenu_median_uc:25670, population:181271, superficie_km2:7.149,  densite_hab_km2:25356, crimes_pour_mille:84.1,  variation_pct_2023:-4.6, repartition_pieces:{T1:29.2,T2:35.9,T3:23.8,T4:8.3,"T5+":2.9} },
-  { num:14, nom:"14ème arrondissement",surnom:"Observatoire – Montparnasse",        prix_medians:{2021:10864,2022:10645,2023:10110,2024:9417, 2025:9615},  logements_sociaux_pct:19.2, nb_logements_sociaux:9005,  revenu_median_uc:29460, population:136455, superficie_km2:5.615,  densite_hab_km2:24302, crimes_pour_mille:81.3,  variation_pct_2023:2.1,  repartition_pieces:{T1:26.4,T2:36.6,T3:23.9,T4:9.4,"T5+":3.7} },
-  { num:15, nom:"15ème arrondissement",surnom:"Vaugirard – Convention",             prix_medians:{2021:10833,2022:10652,2023:10069,2024:9571, 2025:9583},  logements_sociaux_pct:15.8, nb_logements_sociaux:12855, revenu_median_uc:32780, population:229713, superficie_km2:8.495,  densite_hab_km2:27041, crimes_pour_mille:76.1,  variation_pct_2023:0.1,  repartition_pieces:{T1:25.9,T2:33.9,T3:23.7,T4:11.5,"T5+":5.0} },
-  { num:16, nom:"16ème arrondissement",surnom:"Passy – Auteuil – Bois de Boulogne",prix_medians:{2021:11838,2022:12013,2023:11550,2024:11009,2025:11111}, logements_sociaux_pct:6.7,  nb_logements_sociaux:4834,  revenu_median_uc:41550, population:159386, superficie_km2:16.373, densite_hab_km2:9735,  crimes_pour_mille:86.0,  variation_pct_2023:0.9,  repartition_pieces:{T1:20.0,T2:22.9,T3:21.8,T4:16.9,"T5+":18.4} },
-  { num:17, nom:"17ème arrondissement",surnom:"Batignolles – Ternes",               prix_medians:{2021:11470,2022:11429,2023:10875,2024:10201,2025:10323}, logements_sociaux_pct:14.3, nb_logements_sociaux:9913,  revenu_median_uc:33390, population:159212, superficie_km2:5.669,  densite_hab_km2:28085, crimes_pour_mille:80.8,  variation_pct_2023:1.2,  repartition_pieces:{T1:22.9,T2:33.4,T3:23.1,T4:11.4,"T5+":9.1} },
-  { num:18, nom:"18ème arrondissement",surnom:"Butte-Montmartre – Clignancourt",    prix_medians:{2021:10417,2022:10139,2023:9519, 2024:8810, 2025:9024},  logements_sociaux_pct:23.8, nb_logements_sociaux:12401, revenu_median_uc:24910, population:183127, superficie_km2:5.996,  densite_hab_km2:30542, crimes_pour_mille:129.0, variation_pct_2023:2.4,  repartition_pieces:{T1:26.2,T2:43.4,T3:22.4,T4:6.2,"T5+":1.8} },
-  { num:19, nom:"19ème arrondissement",surnom:"Buttes-Chaumont – La Villette",      prix_medians:{2021:9443, 2022:9222, 2023:8773, 2024:7915, 2025:8202},  logements_sociaux_pct:34.5, nb_logements_sociaux:12170, revenu_median_uc:22870, population:178691, superficie_km2:6.793,  densite_hab_km2:26305, crimes_pour_mille:105.8, variation_pct_2023:3.6,  repartition_pieces:{T1:27.0,T2:38.5,T3:23.4,T4:8.6,"T5+":2.5} },
-  { num:20, nom:"20ème arrondissement",surnom:"Ménilmontant – Belleville",          prix_medians:{2021:9692, 2022:9423, 2023:8837, 2024:8321, 2025:8409},  logements_sociaux_pct:27.9, nb_logements_sociaux:14836, revenu_median_uc:23570, population:185140, superficie_km2:5.983,  densite_hab_km2:30944, crimes_pour_mille:64.7,  variation_pct_2023:1.1,  repartition_pieces:{T1:28.3,T2:38.5,T3:22.9,T4:8.2,"T5+":2.2} },
+  { num:1,  nom:"1er arrondissement",  surnom:"Louvre – Palais-Royal",             prix_medians:{2021:13514,2022:13535,2023:13260,2024:12647,2025:12500}, logements_sociaux_pct:4.3,  nb_logements_sociaux:877,   revenu_median_uc:35030, population:15114,  superficie_km2:1.825,  densite_hab_km2:8282,  crimes_pour_mille:577.3, variation_pct:-1.2, repartition_pieces:{T1:30.2,T2:32.0,T3:19.5,T4:9.5,"T5+":8.8} },
+  { num:2,  nom:"2ème arrondissement", surnom:"Bourse",                             prix_medians:{2021:12062,2022:12128,2023:11890,2024:11435,2025:11410}, logements_sociaux_pct:5.1,  nb_logements_sociaux:658,   revenu_median_uc:34050, population:19847,  superficie_km2:0.991,  densite_hab_km2:20027, crimes_pour_mille:232.3, variation_pct:-0.2, repartition_pieces:{T1:35.9,T2:35.5,T3:17.5,T4:7.7,"T5+":3.4} },
+  { num:3,  nom:"3ème arrondissement", surnom:"Temple – Marais Nord",               prix_medians:{2021:12759,2022:12692,2023:12496,2024:11920,2025:12200}, logements_sociaux_pct:7.8,  nb_logements_sociaux:1336,  revenu_median_uc:34800, population:32179,  superficie_km2:1.171,  densite_hab_km2:27480, crimes_pour_mille:135.8, variation_pct:2.3,  repartition_pieces:{T1:31.3,T2:35.1,T3:19.1,T4:9.5,"T5+":5.0} },
+  { num:4,  nom:"4ème arrondissement", surnom:"Hôtel-de-Ville – Île de la Cité",    prix_medians:{2021:13370,2022:13462,2023:13432,2024:12846,2025:13075}, logements_sociaux_pct:6.9,  nb_logements_sociaux:1677,  revenu_median_uc:33040, population:27332,  superficie_km2:1.601,  densite_hab_km2:17072, crimes_pour_mille:185.0, variation_pct:1.8,  repartition_pieces:{T1:28.6,T2:32.5,T3:20.4,T4:10.3,"T5+":8.2} },
+  { num:5,  nom:"5ème arrondissement", surnom:"Panthéon – Quartier Latin",          prix_medians:{2021:12995,2022:13103,2023:12581,2024:11978,2025:12000}, logements_sociaux_pct:7.2,  nb_logements_sociaux:2194,  revenu_median_uc:35960, population:55252,  superficie_km2:2.539,  densite_hab_km2:21761, crimes_pour_mille:102.5, variation_pct:0.2,  repartition_pieces:{T1:32.0,T2:32.3,T3:19.3,T4:9.2,"T5+":7.1} },
+  { num:6,  nom:"6ème arrondissement", surnom:"Luxembourg – Saint-Germain",         prix_medians:{2021:15492,2022:15458,2023:15369,2024:14935,2025:14583}, logements_sociaux_pct:3.2,  nb_logements_sociaux:920,   revenu_median_uc:41750, population:40389,  superficie_km2:2.153,  densite_hab_km2:18759, crimes_pour_mille:133.8, variation_pct:-2.4, repartition_pieces:{T1:25.8,T2:27.5,T3:20.1,T4:12.9,"T5+":13.6} },
+  { num:7,  nom:"7ème arrondissement", surnom:"Palais-Bourbon – Tour Eiffel",       prix_medians:{2021:14995,2022:15303,2023:15000,2024:14414,2025:14413}, logements_sociaux_pct:4.1,  nb_logements_sociaux:805,   revenu_median_uc:45380, population:48015,  superficie_km2:4.09,   densite_hab_km2:11740, crimes_pour_mille:108.3, variation_pct:-2.9, repartition_pieces:{T1:20.4,T2:25.3,T3:20.0,T4:14.3,"T5+":20.0} },
+  { num:8,  nom:"8ème arrondissement", surnom:"Élysée – Champs-Élysées",            prix_medians:{2021:13043,2022:13043,2023:12942,2024:12374,2025:12346}, logements_sociaux_pct:4.8,  nb_logements_sociaux:926,   revenu_median_uc:44100, population:35317,  superficie_km2:3.88,   densite_hab_km2:9102,  crimes_pour_mille:318.7, variation_pct:-0.2, repartition_pieces:{T1:22.4,T2:23.2,T3:19.1,T4:14.4,"T5+":20.9} },
+  { num:9,  nom:"9ème arrondissement", surnom:"Opéra – Pigalle",                    prix_medians:{2021:11886,2022:11891,2023:11458,2024:10686,2025:11042}, logements_sociaux_pct:7.9,  nb_logements_sociaux:2097,  revenu_median_uc:37220, population:57271,  superficie_km2:2.178,  densite_hab_km2:26295, crimes_pour_mille:182.3, variation_pct:3.3,  repartition_pieces:{T1:26.2,T2:28.1,T3:23.1,T4:12.6,"T5+":9.9} },
+  { num:10, nom:"10ème arrondissement",surnom:"Entrepôt – Gare du Nord",            prix_medians:{2021:10868,2022:10667,2023:10042,2024:9333, 2025:9490},  logements_sociaux_pct:14.8, nb_logements_sociaux:4859,  revenu_median_uc:29470, population:83873,  superficie_km2:2.892,  densite_hab_km2:29002, crimes_pour_mille:214.1, variation_pct:1.7,  repartition_pieces:{T1:27.8,T2:36.1,T3:21.8,T4:9.8,"T5+":4.5} },
+  { num:11, nom:"11ème arrondissement",surnom:"Popincourt – Bastille",              prix_medians:{2021:11176,2022:11026,2023:10419,2024:9970, 2025:10089}, logements_sociaux_pct:15.6, nb_logements_sociaux:6665,  revenu_median_uc:30210, population:138170, superficie_km2:3.665,  densite_hab_km2:37700, crimes_pour_mille:92.8,  variation_pct:1.2,  repartition_pieces:{T1:28.8,T2:39.9,T3:21.1,T4:7.2,"T5+":2.9} },
+  { num:12, nom:"12ème arrondissement",surnom:"Reuilly – Bois de Vincennes",        prix_medians:{2021:10392,2022:10200,2023:9583, 2024:8975, 2025:9091},  logements_sociaux_pct:17.9, nb_logements_sociaux:11816, revenu_median_uc:29940, population:138024, superficie_km2:16.315, densite_hab_km2:8460,  crimes_pour_mille:127.4, variation_pct:1.3,  repartition_pieces:{T1:24.2,T2:37.6,T3:24.2,T4:10.3,"T5+":3.7} },
+  { num:13, nom:"13ème arrondissement",surnom:"Gobelins – Chinatown",               prix_medians:{2021:10000,2022:9897, 2023:9146, 2024:8778, 2025:8782},  logements_sociaux_pct:26.7, nb_logements_sociaux:15700, revenu_median_uc:25670, population:181271, superficie_km2:7.149,  densite_hab_km2:25356, crimes_pour_mille:84.1,  variation_pct:-4.6, repartition_pieces:{T1:29.2,T2:35.9,T3:23.8,T4:8.3,"T5+":2.9} },
+  { num:14, nom:"14ème arrondissement",surnom:"Observatoire – Montparnasse",        prix_medians:{2021:10864,2022:10645,2023:10110,2024:9417, 2025:9615},  logements_sociaux_pct:19.2, nb_logements_sociaux:9005,  revenu_median_uc:29460, population:136455, superficie_km2:5.615,  densite_hab_km2:24302, crimes_pour_mille:81.3,  variation_pct:2.1,  repartition_pieces:{T1:26.4,T2:36.6,T3:23.9,T4:9.4,"T5+":3.7} },
+  { num:15, nom:"15ème arrondissement",surnom:"Vaugirard – Convention",             prix_medians:{2021:10833,2022:10652,2023:10069,2024:9571, 2025:9583},  logements_sociaux_pct:15.8, nb_logements_sociaux:12855, revenu_median_uc:32780, population:229713, superficie_km2:8.495,  densite_hab_km2:27041, crimes_pour_mille:76.1,  variation_pct:0.1,  repartition_pieces:{T1:25.9,T2:33.9,T3:23.7,T4:11.5,"T5+":5.0} },
+  { num:16, nom:"16ème arrondissement",surnom:"Passy – Auteuil – Bois de Boulogne",prix_medians:{2021:11838,2022:12013,2023:11550,2024:11009,2025:11111}, logements_sociaux_pct:6.7,  nb_logements_sociaux:4834,  revenu_median_uc:41550, population:159386, superficie_km2:16.373, densite_hab_km2:9735,  crimes_pour_mille:86.0,  variation_pct:0.9,  repartition_pieces:{T1:20.0,T2:22.9,T3:21.8,T4:16.9,"T5+":18.4} },
+  { num:17, nom:"17ème arrondissement",surnom:"Batignolles – Ternes",               prix_medians:{2021:11470,2022:11429,2023:10875,2024:10201,2025:10323}, logements_sociaux_pct:14.3, nb_logements_sociaux:9913,  revenu_median_uc:33390, population:159212, superficie_km2:5.669,  densite_hab_km2:28085, crimes_pour_mille:80.8,  variation_pct:1.2,  repartition_pieces:{T1:22.9,T2:33.4,T3:23.1,T4:11.4,"T5+":9.1} },
+  { num:18, nom:"18ème arrondissement",surnom:"Butte-Montmartre – Clignancourt",    prix_medians:{2021:10417,2022:10139,2023:9519, 2024:8810, 2025:9024},  logements_sociaux_pct:23.8, nb_logements_sociaux:12401, revenu_median_uc:24910, population:183127, superficie_km2:5.996,  densite_hab_km2:30542, crimes_pour_mille:129.0, variation_pct:2.4,  repartition_pieces:{T1:26.2,T2:43.4,T3:22.4,T4:6.2,"T5+":1.8} },
+  { num:19, nom:"19ème arrondissement",surnom:"Buttes-Chaumont – La Villette",      prix_medians:{2021:9443, 2022:9222, 2023:8773, 2024:7915, 2025:8202},  logements_sociaux_pct:34.5, nb_logements_sociaux:12170, revenu_median_uc:22870, population:178691, superficie_km2:6.793,  densite_hab_km2:26305, crimes_pour_mille:105.8, variation_pct:3.6,  repartition_pieces:{T1:27.0,T2:38.5,T3:23.4,T4:8.6,"T5+":2.5} },
+  { num:20, nom:"20ème arrondissement",surnom:"Ménilmontant – Belleville",          prix_medians:{2021:9692, 2022:9423, 2023:8837, 2024:8321, 2025:8409},  logements_sociaux_pct:27.9, nb_logements_sociaux:14836, revenu_median_uc:23570, population:185140, superficie_km2:5.983,  densite_hab_km2:30944, crimes_pour_mille:64.7,  variation_pct:1.1,  repartition_pieces:{T1:28.3,T2:38.5,T3:22.9,T4:8.2,"T5+":2.2} },
 ];
 
 // ── État global ─────────────────────────────────────────────────────────────
@@ -86,6 +89,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function loadGoldData() {
+  const badge = document.getElementById("data-source-badge");
   try {
     const r = await fetch(`${API_BASE}/arrondissements`, { signal: AbortSignal.timeout(4000) });
     if (r.ok) {
@@ -98,11 +102,13 @@ async function loadGoldData() {
             Object.entries(a.prix_medians || {}).map(([y, v]) => [+y, v])
           ),
         }));
+        if (badge) { badge.textContent = "● API"; badge.classList.add("badge-api"); }
         return;
       }
     }
   } catch (_) {}
-  // Fallback : données embarquées
+  // Fallback : données Gold statiques embarquées (voir commentaire bloc GOLD_DATA)
+  if (badge) { badge.textContent = "● Hors ligne"; badge.classList.add("badge-offline"); }
 }
 
 // ── Carte Leaflet ────────────────────────────────────────────────────────────
@@ -149,7 +155,7 @@ function getIndicatorValue(d, annee) {
     case "revenu_median_uc":      return d.revenu_median_uc ?? null;
     case "crimes_pour_mille":     return d.crimes_pour_mille ?? null;
     case "densite_hab_km2":       return d.densite_hab_km2 ?? null;
-    case "variation_pct":         return d.variation_pct_2023 ?? null;
+    case "variation_pct":         return d.variation_pct ?? null;
   }
 }
 
@@ -246,7 +252,7 @@ function onHover(e, feature) {
   if (!d) return;
 
   const prix = d.prix_medians?.[state.annee];
-  const variation = d.variation_pct_2023;
+  const variation = d.variation_pct;
   const varStr = variation != null
     ? `${variation > 0 ? "+" : ""}${variation.toFixed(1)}%`
     : "—";
@@ -322,7 +328,7 @@ function showDetailPanel(d) {
   document.getElementById("detail-title").textContent = `${d.num}${ordinal(d.num)} — ${d.surnom}`;
 
   const prix = d.prix_medians?.[state.annee];
-  const variation = d.variation_pct_2023;
+  const variation = d.variation_pct;
 
   document.getElementById("d-prix").textContent =
     prix ? `${prix.toLocaleString("fr-FR")} €/m²` : "—";
@@ -421,7 +427,7 @@ function updateKPIs() {
   document.getElementById("kpi-arr-max").textContent = `${prices[0].num}${ordinal(prices[0].num)} — ${prices[0].prix.toLocaleString("fr-FR")} €`;
   document.getElementById("kpi-arr-min").textContent = `${prices[prices.length-1].num}${ordinal(prices[prices.length-1].num)} — ${prices[prices.length-1].prix.toLocaleString("fr-FR")} €`;
 
-  const avgVar = GOLD_DATA.reduce((s, d) => s + (d.variation_pct_2023 ?? 0), 0) / GOLD_DATA.length;
+  const avgVar = GOLD_DATA.reduce((s, d) => s + (d.variation_pct ?? 0), 0) / GOLD_DATA.length;
   const varEl = document.getElementById("kpi-variation");
   varEl.textContent = `${avgVar > 0 ? "+" : ""}${avgVar.toFixed(1)}%`;
   varEl.className = `kpi-value ${avgVar < 0 ? "neg" : "pos"}`;
@@ -474,7 +480,7 @@ function showComparison(num1, num2) {
 
   const indicators = [
     { key: "prix_m2_latest",       label: `Prix/m² ${latestYear}`, fmt: v => `${v?.toLocaleString("fr-FR")} €`, higher: "worse" },
-    { key: "variation_pct_2023",   label: "Variation annuelle",    fmt: v => v != null ? `${v > 0 ? "+" : ""}${v.toFixed(1)}%` : "—", higher: "better" },
+    { key: "variation_pct",   label: "Variation annuelle",    fmt: v => v != null ? `${v > 0 ? "+" : ""}${v.toFixed(1)}%` : "—", higher: "better" },
     { key: "logements_sociaux_pct",label: "Logements sociaux",     fmt: v => `${v}%`, higher: "better" },
     { key: "revenu_median_uc",     label: "Revenu médian/UC",      fmt: v => `${v?.toLocaleString("fr-FR")} €`, higher: "better" },
     { key: "crimes_pour_mille",    label: "Criminalité/1000",      fmt: v => v, higher: "worse" },

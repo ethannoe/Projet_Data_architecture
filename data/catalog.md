@@ -172,7 +172,7 @@ Table principale servant l'API et le dashboard.
 | superficie_km2 | float | OpenData Paris GeoJSON | Superficie calculée depuis la géométrie |
 | densite_hab_km2 | float | Calculé | `population / superficie_km2` |
 | crimes_pour_mille | float | SSMSI 2025 | Somme taux/1000 sur 14 indicateurs (année 2025) |
-| variation_pct_2023 | float | DVF data.gouv.fr | Variation prix médian 2024→2025 (%) |
+| variation_pct | float | DVF data.gouv.fr | Variation prix médian année N-1→N (dernière paire disponible, %) |
 | repartition_pieces | object | DVF data.gouv.fr | Distribution typologies {T1…T5+} en % |
 
 **Note sur `logements_sociaux_pct` :**

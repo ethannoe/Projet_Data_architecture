@@ -8,12 +8,18 @@ venv/
 dist/
 build/
 
+# Soutenance (non publiée sur GitHub)
+rendu/
+
 # Données brutes et silver (volumineuses, régénérables)
 data/bronze/
 data/silver/
 
 # Gold versionnée (garder dans git)
 !data/gold/
+
+# Logs pipeline
+*.log
 
 # OS
 .DS_Store

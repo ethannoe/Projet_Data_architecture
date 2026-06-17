@@ -36,14 +36,14 @@
       "superficie_km2": 1.825,
       "densite_hab_km2": 8282,
       "crimes_pour_mille": 577.3,
-      "variation_pct_2023": -1.2,
       "repartition_pieces": {
         "T1": 30.2,
         "T2": 32.0,
         "T3": 19.5,
         "T4": 9.5,
         "T5+": 8.8
-      }
+      },
+      "variation_pct": -1.2
     },
     {
       "num": 2,
@@ -71,14 +71,14 @@
       "superficie_km2": 0.991,
       "densite_hab_km2": 20027,
       "crimes_pour_mille": 232.3,
-      "variation_pct_2023": -0.2,
       "repartition_pieces": {
         "T1": 35.9,
         "T2": 35.5,
         "T3": 17.5,
         "T4": 7.7,
         "T5+": 3.4
-      }
+      },
+      "variation_pct": -0.2
     },
     {
       "num": 3,
@@ -106,14 +106,14 @@
       "superficie_km2": 1.171,
       "densite_hab_km2": 27480,
       "crimes_pour_mille": 135.8,
-      "variation_pct_2023": 2.3,
       "repartition_pieces": {
         "T1": 31.3,
         "T2": 35.1,
         "T3": 19.1,
         "T4": 9.5,
         "T5+": 5.0
-      }
+      },
+      "variation_pct": 2.3
     },
     {
       "num": 4,
@@ -141,14 +141,14 @@
       "superficie_km2": 1.601,
       "densite_hab_km2": 17072,
       "crimes_pour_mille": 185.0,
-      "variation_pct_2023": 1.8,
       "repartition_pieces": {
         "T1": 28.6,
         "T2": 32.5,
         "T3": 20.4,
         "T4": 10.3,
         "T5+": 8.2
-      }
+      },
+      "variation_pct": 1.8
     },
     {
       "num": 5,
@@ -176,14 +176,14 @@
       "superficie_km2": 2.539,
       "densite_hab_km2": 21761,
       "crimes_pour_mille": 102.5,
-      "variation_pct_2023": 0.2,
       "repartition_pieces": {
         "T1": 32.0,
         "T2": 32.3,
         "T3": 19.3,
         "T4": 9.2,
         "T5+": 7.1
-      }
+      },
+      "variation_pct": 0.2
     },
     {
       "num": 6,
@@ -211,14 +211,14 @@
       "superficie_km2": 2.153,
       "densite_hab_km2": 18759,
       "crimes_pour_mille": 133.8,
-      "variation_pct_2023": -2.4,
       "repartition_pieces": {
         "T1": 25.8,
         "T2": 27.5,
         "T3": 20.1,
         "T4": 12.9,
         "T5+": 13.6
-      }
+      },
+      "variation_pct": -2.4
     },
     {
       "num": 7,
@@ -246,14 +246,14 @@
       "superficie_km2": 4.09,
       "densite_hab_km2": 11740,
       "crimes_pour_mille": 108.3,
-      "variation_pct_2023": -2.9,
       "repartition_pieces": {
         "T1": 20.4,
         "T2": 25.3,
         "T3": 20.0,
         "T4": 14.3,
         "T5+": 20.0
-      }
+      },
+      "variation_pct": -2.9
     },
     {
       "num": 8,
@@ -281,14 +281,14 @@
       "superficie_km2": 3.88,
       "densite_hab_km2": 9102,
       "crimes_pour_mille": 318.7,
-      "variation_pct_2023": -0.2,
       "repartition_pieces": {
         "T1": 22.4,
         "T2": 23.2,
         "T3": 19.1,
         "T4": 14.4,
         "T5+": 20.9
-      }
+      },
+      "variation_pct": -0.2
     },
     {
       "num": 9,
@@ -316,14 +316,14 @@
       "superficie_km2": 2.178,
       "densite_hab_km2": 26295,
       "crimes_pour_mille": 182.3,
-      "variation_pct_2023": 3.3,
       "repartition_pieces": {
         "T1": 26.2,
         "T2": 28.1,
         "T3": 23.1,
         "T4": 12.6,
         "T5+": 9.9
-      }
+      },
+      "variation_pct": 3.3
     },
     {
       "num": 10,
@@ -351,14 +351,14 @@
       "superficie_km2": 2.892,
       "densite_hab_km2": 29002,
       "crimes_pour_mille": 214.1,
-      "variation_pct_2023": 1.7,
       "repartition_pieces": {
         "T1": 27.8,
         "T2": 36.1,
         "T3": 21.8,
         "T4": 9.8,
         "T5+": 4.5
-      }
+      },
+      "variation_pct": 1.7
     },
     {
       "num": 11,
@@ -386,14 +386,14 @@
       "superficie_km2": 3.665,
       "densite_hab_km2": 37700,
       "crimes_pour_mille": 92.8,
-      "variation_pct_2023": 1.2,
       "repartition_pieces": {
         "T1": 28.8,
         "T2": 39.9,
         "T3": 21.1,
         "T4": 7.2,
         "T5+": 2.9
-      }
+      },
+      "variation_pct": 1.2
     },
     {
       "num": 12,
@@ -421,14 +421,14 @@
       "superficie_km2": 16.315,
       "densite_hab_km2": 8460,
       "crimes_pour_mille": 127.4,
-      "variation_pct_2023": 1.3,
       "repartition_pieces": {
         "T1": 24.2,
         "T2": 37.6,
         "T3": 24.2,
         "T4": 10.3,
         "T5+": 3.7
-      }
+      },
+      "variation_pct": 1.3
     },
     {
       "num": 13,
@@ -456,14 +456,14 @@
       "superficie_km2": 7.149,
       "densite_hab_km2": 25356,
       "crimes_pour_mille": 84.1,
-      "variation_pct_2023": -4.6,
       "repartition_pieces": {
         "T1": 29.2,
         "T2": 35.9,
         "T3": 23.8,
         "T4": 8.3,
         "T5+": 2.9
-      }
+      },
+      "variation_pct": -4.6
     },
     {
       "num": 14,
@@ -491,14 +491,14 @@
       "superficie_km2": 5.615,
       "densite_hab_km2": 24302,
       "crimes_pour_mille": 81.3,
-      "variation_pct_2023": 2.1,
       "repartition_pieces": {
         "T1": 26.4,
         "T2": 36.6,
         "T3": 23.9,
         "T4": 9.4,
         "T5+": 3.7
-      }
+      },
+      "variation_pct": 2.1
     },
     {
       "num": 15,
@@ -526,14 +526,14 @@
       "superficie_km2": 8.495,
       "densite_hab_km2": 27041,
       "crimes_pour_mille": 76.1,
-      "variation_pct_2023": 0.1,
       "repartition_pieces": {
         "T1": 25.9,
         "T2": 33.9,
         "T3": 23.7,
         "T4": 11.5,
         "T5+": 5.0
-      }
+      },
+      "variation_pct": 0.1
     },
     {
       "num": 16,
@@ -561,14 +561,14 @@
       "superficie_km2": 16.373,
       "densite_hab_km2": 9735,
       "crimes_pour_mille": 86.0,
-      "variation_pct_2023": 0.9,
       "repartition_pieces": {
         "T1": 20.0,
         "T2": 22.9,
         "T3": 21.8,
         "T4": 16.9,
         "T5+": 18.4
-      }
+      },
+      "variation_pct": 0.9
     },
     {
       "num": 17,
@@ -596,14 +596,14 @@
       "superficie_km2": 5.669,
       "densite_hab_km2": 28085,
       "crimes_pour_mille": 80.8,
-      "variation_pct_2023": 1.2,
       "repartition_pieces": {
         "T1": 22.9,
         "T2": 33.4,
         "T3": 23.1,
         "T4": 11.4,
         "T5+": 9.1
-      }
+      },
+      "variation_pct": 1.2
     },
     {
       "num": 18,
@@ -631,14 +631,14 @@
       "superficie_km2": 5.996,
       "densite_hab_km2": 30542,
       "crimes_pour_mille": 129.0,
-      "variation_pct_2023": 2.4,
       "repartition_pieces": {
         "T1": 26.2,
         "T2": 43.4,
         "T3": 22.4,
         "T4": 6.2,
         "T5+": 1.8
-      }
+      },
+      "variation_pct": 2.4
     },
     {
       "num": 19,
@@ -666,14 +666,14 @@
       "superficie_km2": 6.793,
       "densite_hab_km2": 26305,
       "crimes_pour_mille": 105.8,
-      "variation_pct_2023": 3.6,
       "repartition_pieces": {
         "T1": 27.0,
         "T2": 38.5,
         "T3": 23.4,
         "T4": 8.6,
         "T5+": 2.5
-      }
+      },
+      "variation_pct": 3.6
     },
     {
       "num": 20,
@@ -701,14 +701,14 @@
       "superficie_km2": 5.983,
       "densite_hab_km2": 30944,
       "crimes_pour_mille": 64.7,
-      "variation_pct_2023": 1.1,
       "repartition_pieces": {
         "T1": 28.3,
         "T2": 38.5,
         "T3": 22.9,
         "T4": 8.2,
         "T5+": 2.2
-      }
+      },
+      "variation_pct": 1.1
     }
   ]
 }

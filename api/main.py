@@ -117,7 +117,7 @@ def get_prix_arrondissement(num: int):
         "arrondissement": num,
         "nom": a["nom"],
         "prix_medians": a.get("prix_medians", {}),
-        "variation_pct_2023": a.get("variation_pct_2023"),
+        "variation_pct": a.get("variation_pct"),
     }
 
 
@@ -229,7 +229,7 @@ def get_indicateurs():
             "num": a["num"],
             "nom": a["nom"],
             "prix_m2_2023": a.get("prix_medians", {}).get("2023"),
-            "variation_pct": a.get("variation_pct_2023"),
+            "variation_pct": a.get("variation_pct"),
             "logements_sociaux_pct": a.get("logements_sociaux_pct"),
             "revenu_median_uc": a.get("revenu_median_uc"),
             "population": a.get("population"),
@@ -293,7 +293,7 @@ def get_geojson(indicateur: str = Query("prix_m2_2023", description="Indicateur 
                 props["revenu_median_uc"] = gold.get("revenu_median_uc")
                 props["crimes_pour_mille"] = gold.get("crimes_pour_mille")
                 props["population"] = gold.get("population")
-                props["variation_pct_2023"] = gold.get("variation_pct_2023")
+                props["variation_pct"] = gold.get("variation_pct")
             except (ValueError, TypeError):
                 pass
 
