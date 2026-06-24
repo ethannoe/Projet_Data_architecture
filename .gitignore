@@ -18,6 +18,12 @@ data/silver/
 # Gold versionnée (garder dans git)
 !data/gold/
 
+# NoSQL TinyDB versionnée (garder dans git)
+!data/nosql/
+
+# SQLite — fichier binaire régénérable, non versionné
+data/urban_data.db
+
 # Logs pipeline
 *.log
 

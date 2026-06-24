@@ -1,0 +1,15 @@
+{
+  "_default": {
+    "1": {
+      "metadata": {
+        "periode": "2021-2025",
+        "source": "init depuis Gold JSON",
+        "zone": "gold"
+      },
+      "stats": {
+        "nb_arrondissements": 20
+      },
+      "timestamp": "2026-06-24T12:18:03.694084"
+    }
+  }
+}

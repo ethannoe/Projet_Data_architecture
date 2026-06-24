@@ -8,3 +8,9 @@ pyarrow>=14.0.0
 fastapi>=0.109.0
 uvicorn[standard]>=0.27.0
 python-multipart>=0.0.9
+
+# Base relationnelle — SQLite (C1.1)
+sqlalchemy>=2.0.0
+
+# Base non relationnelle — TinyDB document store (C1.2)
+tinydb>=4.8.0

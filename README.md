@@ -24,16 +24,28 @@ Le dashboard interactif affiche, pour chacun des 20 arrondissements :
 ```
 Sources ouvertes (APIs, CSV, JSON)
         ↓
-Zone Bronze  (data/bronze/)     — données brutes, non transformées
+Zone Bronze  (data/bronze/)         — données brutes, non transformées
         ↓
-Zone Silver  (data/silver/)     — nettoyées, normalisées, géocodées
+Zone Silver  (data/silver/)         — nettoyées, normalisées (Parquet)
         ↓
-Zone Gold    (data/gold/)       — agrégées, enrichies, prêtes à servir
-        ↓
-API Web      (api/main.py)      — FastAPI, endpoints REST
-        ↓
-Dashboard    (frontend/)        — JS + Leaflet + Chart.js
+Zone Gold    (data/gold/)           — agrégées, enrichies (JSON + Parquet + GeoJSON)
+        ↓                   ↘
+   Base SQLite               Base TinyDB
+   (data/urban_data.db)      (data/nosql/)
+   SQLAlchemy ORM            Document store NoSQL
+   3 tables relationnelles   Profils JSON + logs pipeline
+        ↘                   ↙
+         API Web  (api/main.py)     — FastAPI, endpoints REST
+                ↓
+         Dashboard (frontend/)      — JS + Leaflet + Chart.js
 ```
+
+### Bases de données
+
+| Technologie | Type | Rôle | Compétence |
+|---|---|---|---|
+| **SQLite + SQLAlchemy** | Relationnel (SQL) | 3 tables : `arrondissements`, `prix_historiques`, `repartitions_pieces` avec clés étrangères et contraintes | C1.1 |
+| **TinyDB** | Non relationnel (NoSQL) | Documents JSON semi-structurés : profils arrondissements (objets imbriqués) + logs pipeline | C1.2 |
 
 ---
 
@@ -56,23 +68,26 @@ urban-data-explorer/
 ├── pipeline/
 │   ├── ingest.py        # Étape 2 : collecte des données (Zone Bronze)
 │   ├── clean.py         # Étape 3 : nettoyage et normalisation (Zone Silver)
-│   └── aggregate.py     # Étape 4 : agrégation et enrichissement (Zone Gold)
+│   └── aggregate.py     # Étape 4 : agrégation Gold + écriture SQL et NoSQL
+├── database/
+│   ├── sql_db.py        # Base relationnelle SQLite/SQLAlchemy (C1.1)
+│   └── nosql_db.py      # Base non relationnelle TinyDB (C1.2)
 ├── data/
 │   ├── bronze/          # Données brutes (non versionnées)
-│   ├── silver/          # Données nettoyées (non versionnées)
-│   └── gold/
-│       └── arrondissements_enrichis.json   # Table Gold principale
+│   ├── silver/          # Données nettoyées Parquet (non versionnées)
+│   ├── gold/            # Données Gold JSON + Parquet + GeoJSON (versionnées)
+│   ├── nosql/           # TinyDB JSON — profils + logs (versionnés)
+│   └── catalog.md       # Data catalog
 ├── api/
-│   ├── main.py          # API FastAPI
+│   ├── main.py          # API FastAPI (endpoints Gold + /db/* + /nosql/*)
 │   ├── requirements.txt
-│   └── Procfile         # Déploiement Render/Railway
+│   └── Procfile         # Déploiement Render
 ├── frontend/
 │   ├── index.html       # Dashboard
 │   ├── app.js           # Logique carte + graphiques
 │   └── style.css        # Design
 ├── run_pipeline.py      # Orchestrateur pipeline complet
-├── requirements.txt
-└── data/catalog.md      # Data catalog
+└── requirements.txt
 ```
 
 ---
@@ -114,6 +129,8 @@ Ouvrir `frontend/index.html` directement dans un navigateur **ou** accéder à `
 
 ## Endpoints API
 
+### Données Gold (JSON)
+
 | Endpoint | Description |
 |----------|-------------|
 | `GET /arrondissements` | Tous les arrondissements avec indicateurs |
@@ -126,6 +143,23 @@ Ouvrir `frontend/index.html` directement dans un navigateur **ou** accéder à `
 | `GET /indicateurs` | Tableau de bord complet tous indicateurs |
 | `GET /geojson` | GeoJSON enrichi compatible Leaflet/Mapbox |
 | `GET /docs` | Documentation Swagger UI |
+
+### Base relationnelle — SQLite/SQLAlchemy (C1.1)
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /db/arrondissements?annee=2023` | Requête JOIN arrondissements + prix pour une année |
+| `GET /db/prix?arrondissement=6&annee=2023` | Filtre sur la table `prix_historiques` |
+| `GET /db/stats` | Agrégats SQL (AVG, MIN, MAX, SUM) par année |
+
+### Base non relationnelle — TinyDB (C1.2)
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /nosql/profiles` | Tous les profils documents JSON |
+| `GET /nosql/profiles/{num}` | Document complet d'un arrondissement |
+| `GET /nosql/search?min_prix=12000&annee=2023` | Recherche sur champ imbriqué (prix_medians[annee]) |
+| `GET /nosql/pipeline-logs` | Logs d'exécution du pipeline (schéma variable) |
 
 ---
 
@@ -183,12 +217,15 @@ Modifier `API_BASE` dans `app.js` pour pointer vers l'URL de production.
 
 ## Résultats clés (2023)
 
-- **Arrondissement le plus cher** : 6ème (Saint-Germain) — 14 580 €/m²
-- **Arrondissement le moins cher** : 19ème (Buttes-Chaumont) — 8 610 €/m²
-- **Prix médian Paris 2023** : ~10 900 €/m²
-- **Variation 2022→2023** : -4,2 % en moyenne (correction du marché post-Covid)
-- **Plus forte part de logements sociaux** : 19ème (34,5 %)
-- **Plus faible part de logements sociaux** : 6ème (3,2 %)
+- **Arrondissement le plus cher** : 6ème (Luxembourg – Saint-Germain) — **15 369 €/m²**
+- **Arrondissement le moins cher** : 19ème (Buttes-Chaumont) — **8 773 €/m²**
+- **Prix médian moyen Paris 2023** : **~11 368 €/m²**
+- **Variation 2022→2023** : **-3,9 % en moyenne** (correction du marché post-Covid)
+- **Plus forte part de logements sociaux** : 19ème (34,5 %) — source RPLS 2022
+- **Plus faible part de logements sociaux** : 6ème (3,2 %) — source RPLS 2022
+
+> Valeurs calculées depuis 158 447 transactions DVF réelles (data.gouv.fr, 2021–2025).  
+> Requête SQL de vérification : `GET /db/stats`
 
 ---
 

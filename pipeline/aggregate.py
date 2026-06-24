@@ -328,6 +328,34 @@ def run_aggregation() -> list:
     arrondissements = merge_gold_table(prix_medians, nb_transactions, repartition_pieces, revenus, crimes, logsoc)
     export_gold(arrondissements)
 
+    # ── Bases de données ───────────────────────────────────────────────────────
+    # SQL (SQLite) — données structurées avec schéma relationnel (C1.1)
+    try:
+        from database.sql_db import write_gold_to_sql
+        write_gold_to_sql(arrondissements)
+    except ImportError:
+        logger.warning("sqlalchemy absent — base SQL ignorée.")
+    except Exception as exc:
+        logger.error(f"Erreur écriture SQL : {exc}")
+
+    # NoSQL (TinyDB) — profils documents JSON + log pipeline (C1.2)
+    try:
+        from database.nosql_db import write_profiles, log_pipeline_run
+        write_profiles(arrondissements)
+        log_pipeline_run(
+            {"zone": "gold", "periode": "2021-2025"},
+            {
+                "nb_arrondissements": len(arrondissements),
+                "nb_lignes_dvf":      len(dvf) if not dvf.empty else 0,
+                "nb_lignes_revenus":  len(revenus) if not revenus.empty else 0,
+                "nb_lignes_crimes":   len(crimes) if not crimes.empty else 0,
+            },
+        )
+    except ImportError:
+        logger.warning("tinydb absent — base NoSQL ignorée.")
+    except Exception as exc:
+        logger.error(f"Erreur écriture NoSQL : {exc}")
+
     logger.info("=" * 50)
     logger.info("ZONE GOLD — AGRÉGATION TERMINÉE")
     logger.info("=" * 50)
