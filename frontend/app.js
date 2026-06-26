@@ -4,10 +4,7 @@
  * Données Gold embarquées (fallback si API indisponible)
  */
 
-// ── Configuration ──────────────────────────────────────────────────────────
-// En développement local : "http://localhost:8000"
-// En production (après déploiement Render) : remplacer par l'URL Render réelle
-// ex: "https://urban-data-explorer-api.onrender.com"
+
 const API_BASE = ["localhost", "127.0.0.1", ""].includes(window.location.hostname)
   ? "http://localhost:8000"
   : "https://urban-data-explorer-1.onrender.com";

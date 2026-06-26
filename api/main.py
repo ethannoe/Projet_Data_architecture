@@ -4,10 +4,13 @@ FastAPI — expose les données Gold pour le dashboard frontend
 Bases : SQLite (SQL, C1.1) + TinyDB (NoSQL, C1.2)
 """
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 import json
 import logging
 import requests as _requests
@@ -38,6 +41,8 @@ async def lifespan(app: FastAPI):
     yield
 
 
+limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
+
 app = FastAPI(
     title="Urban Data Explorer API",
     description=(
@@ -49,6 +54,9 @@ app = FastAPI(
     docs_url="/docs",
     lifespan=lifespan,
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
@@ -80,12 +88,14 @@ def get_arr(num: int) -> dict:
 # ── Health ──────────────────────────────────────────────────────────────────
 
 @app.get("/", tags=["health"])
-def root():
+@limiter.limit("60/minute")
+def root(request: Request):
     return {"status": "ok", "api": "Urban Data Explorer", "version": "1.0.0"}
 
 
 @app.get("/health", tags=["health"])
-def health():
+@limiter.limit("60/minute")
+def health(request: Request):
     try:
         data = load_gold()
         return {
@@ -100,13 +110,15 @@ def health():
 # ── Arrondissements ──────────────────────────────────────────────────────────
 
 @app.get("/arrondissements", tags=["arrondissements"])
-def list_arrondissements():
+@limiter.limit("60/minute")
+def list_arrondissements(request: Request):
     """Retourne la liste complète des arrondissements avec tous les indicateurs."""
     return load_gold()
 
 
 @app.get("/arrondissements/{num}", tags=["arrondissements"])
-def get_arrondissement(num: int):
+@limiter.limit("60/minute")
+def get_arrondissement(request: Request, num: int):
     """Retourne les données complètes pour un arrondissement donné (1-20)."""
     if not 1 <= num <= 20:
         raise HTTPException(status_code=400, detail="Numéro d'arrondissement invalide (1-20).")
@@ -116,7 +128,8 @@ def get_arrondissement(num: int):
 # ── Prix ─────────────────────────────────────────────────────────────────────
 
 @app.get("/prix", tags=["prix"])
-def get_prix(annee: Optional[int] = Query(None, description="Année (2021-2025)")):
+@limiter.limit("60/minute")
+def get_prix(request: Request, annee: Optional[int] = Query(None, description="Année (2021-2025)")):
     """
     Prix médians par arrondissement.
     Sans paramètre → toutes les années.
@@ -143,7 +156,8 @@ def get_prix(annee: Optional[int] = Query(None, description="Année (2021-2025)"
 
 
 @app.get("/prix/{num}", tags=["prix"])
-def get_prix_arrondissement(num: int):
+@limiter.limit("60/minute")
+def get_prix_arrondissement(request: Request, num: int):
     """Prix médians par année pour un arrondissement (série temporelle)."""
     a = get_arr(num)
     return {
@@ -157,7 +171,8 @@ def get_prix_arrondissement(num: int):
 # ── Timeline ─────────────────────────────────────────────────────────────────
 
 @app.get("/timeline", tags=["timeline"])
-def get_timeline(arr: Optional[int] = Query(None, description="Numéro d'arrondissement (1-20)")):
+@limiter.limit("60/minute")
+def get_timeline(request: Request, arr: Optional[int] = Query(None, description="Numéro d'arrondissement (1-20)")):
     """
     Évolution temporelle des prix 2021-2025.
     Sans paramètre → moyenne Paris.
@@ -197,7 +212,9 @@ def get_timeline(arr: Optional[int] = Query(None, description="Numéro d'arrondi
 # ── Comparaison ───────────────────────────────────────────────────────────────
 
 @app.get("/comparaison", tags=["comparaison"])
+@limiter.limit("60/minute")
 def comparer(
+    request: Request,
     arr1: int = Query(..., description="Premier arrondissement"),
     arr2: int = Query(..., description="Deuxième arrondissement"),
 ):
@@ -228,7 +245,8 @@ def comparer(
 # ── Logements sociaux ─────────────────────────────────────────────────────────
 
 @app.get("/logements-sociaux", tags=["logements sociaux"])
-def get_logements_sociaux():
+@limiter.limit("60/minute")
+def get_logements_sociaux(request: Request):
     """Part de logements sociaux (%) par arrondissement, triée par taux décroissant."""
     data = load_gold()
     result = sorted(
@@ -250,7 +268,8 @@ def get_logements_sociaux():
 # ── Indicateurs socio-économiques ────────────────────────────────────────────
 
 @app.get("/indicateurs", tags=["indicateurs"])
-def get_indicateurs():
+@limiter.limit("60/minute")
+def get_indicateurs(request: Request):
     """
     Tableau de bord complet : prix, logements sociaux, revenus,
     criminalité, densité par arrondissement.
@@ -275,7 +294,8 @@ def get_indicateurs():
 # ── GeoJSON ───────────────────────────────────────────────────────────────────
 
 @app.get("/geojson", tags=["géographie"])
-def get_geojson(indicateur: str = Query("prix_m2_2023", description="Indicateur à inclure dans les propriétés")):
+@limiter.limit("60/minute")
+def get_geojson(request: Request, indicateur: str = Query("prix_m2_2023", description="Indicateur à inclure dans les propriétés")):
     """
     Retourne le GeoJSON des arrondissements enrichi avec les indicateurs Gold.
     Compatible Mapbox / Leaflet / Deck.gl.
@@ -345,7 +365,8 @@ if frontend_dir.exists():
 # ═══════════════════════════════════════════════════════════════════════════════
 
 @app.get("/db/arrondissements", tags=["SQL — base relationnelle"])
-def db_list_arrondissements(annee: Optional[int] = Query(None, description="Filtrer sur une année (2021-2025)")):
+@limiter.limit("60/minute")
+def db_list_arrondissements(request: Request, annee: Optional[int] = Query(None, description="Filtrer sur une année (2021-2025)")):
     """
     Retourne les arrondissements depuis la base SQLite.
     Avec ?annee=2023 → ajoute le prix médian pour cette année.
@@ -359,7 +380,9 @@ def db_list_arrondissements(annee: Optional[int] = Query(None, description="Filt
 
 
 @app.get("/db/prix", tags=["SQL — base relationnelle"])
+@limiter.limit("60/minute")
 def db_prix(
+    request: Request,
     arrondissement: Optional[int] = Query(None, description="Numéro d'arrondissement (1-20)"),
     annee: Optional[int] = Query(None, description="Année (2021-2025)"),
 ):
@@ -375,7 +398,8 @@ def db_prix(
 
 
 @app.get("/db/stats", tags=["SQL — base relationnelle"])
-def db_stats():
+@limiter.limit("60/minute")
+def db_stats(request: Request):
     """
     Statistiques agrégées calculées directement en SQL (AVG, MIN, MAX, SUM).
     Démontre des requêtes analytiques sur la base relationnelle.
@@ -388,11 +412,12 @@ def db_stats():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# BASE NON RELATIONNELLE — TinyDB  (C1.2)
+# BASE NON RELATIONNELLE — TinyDB  
 # ═══════════════════════════════════════════════════════════════════════════════
 
 @app.get("/nosql/profiles", tags=["NoSQL — base documentaire"])
-def nosql_all_profiles():
+@limiter.limit("60/minute")
+def nosql_all_profiles(request: Request):
     """
     Retourne tous les profils arrondissements depuis TinyDB (document store NoSQL).
     Chaque document est un objet JSON semi-structuré avec champs imbriqués
@@ -406,7 +431,8 @@ def nosql_all_profiles():
 
 
 @app.get("/nosql/profiles/{num}", tags=["NoSQL — base documentaire"])
-def nosql_profile(num: int):
+@limiter.limit("60/minute")
+def nosql_profile(request: Request, num: int):
     """Retourne le document profil complet d'un arrondissement (TinyDB)."""
     try:
         from database.nosql_db import get_profile
@@ -421,7 +447,9 @@ def nosql_profile(num: int):
 
 
 @app.get("/nosql/search", tags=["NoSQL — base documentaire"])
+@limiter.limit("60/minute")
 def nosql_search(
+    request: Request,
     min_prix: Optional[float] = Query(None, description="Prix/m² minimum"),
     max_prix: Optional[float] = Query(None, description="Prix/m² maximum"),
     annee: int = Query(2023, description="Année de référence"),
@@ -439,7 +467,8 @@ def nosql_search(
 
 
 @app.get("/nosql/pipeline-logs", tags=["NoSQL — base documentaire"])
-def nosql_pipeline_logs(limit: int = Query(10, description="Nombre de logs à retourner")):
+@limiter.limit("60/minute")
+def nosql_pipeline_logs(request: Request, limit: int = Query(10, description="Nombre de logs à retourner")):
     """
     Retourne les derniers logs d'exécution du pipeline (TinyDB).
     Démontre le stockage de documents à schéma variable (logs d'événements).

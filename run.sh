@@ -107,6 +107,23 @@ run_api() {
     "$VENV/bin/uvicorn" api.main:app --host 0.0.0.0 --port "$PORT" --reload
 }
 
+# ── Planification hebdomadaire (cron) ─────────────────────────────────────────
+schedule_cron() {
+    header "PLANIFICATION HEBDOMADAIRE"
+
+    CRON_EXPR="0 2 * * 0"
+    CRON_CMD="$SCRIPT_DIR/run.sh pipeline >> $LOG_DIR/cron.log 2>&1"
+    CRON_LINE="$CRON_EXPR $CRON_CMD"
+
+    log "Configuration cron : chaque dimanche à 02h00"
+    log "Expression cron    : $CRON_EXPR"
+    log "Commande           : $CRON_CMD"
+
+    (crontab -l 2>/dev/null; echo "$CRON_LINE") | crontab -
+    ok "Tâche planifiée ajoutée au crontab système."
+    log "Vérification : crontab -l"
+}
+
 # ── Reset ─────────────────────────────────────────────────────────────────────
 reset_data() {
     header "RESET DONNÉES GÉNÉRÉES"
@@ -131,10 +148,12 @@ usage() {
     echo -e "    ${GREEN}pipeline${NC}   Exécute Bronze → Silver → Gold → SQL/NoSQL"
     echo -e "    ${GREEN}api${NC}        Démarre l'API FastAPI (port 8000)"
     echo -e "    ${GREEN}all${NC}        Pipeline + API (enchainés)"
+    echo -e "    ${GREEN}schedule${NC}   Planifie la pipeline chaque dimanche à 02h00 (cron)"
     echo -e "    ${GREEN}reset${NC}      Supprime les données régénérables"
     echo ""
     echo "  Exemple :"
     echo "    ./run.sh all          # pipeline complet puis API"
+    echo "    ./run.sh schedule     # active la planification hebdomadaire"
     echo "    PORT=8001 ./run.sh api  # API sur port custom"
     echo ""
 }
@@ -159,6 +178,9 @@ case "$CMD" in
         setup_env
         run_pipeline
         run_api
+        ;;
+    schedule)
+        schedule_cron
         ;;
     reset)
         reset_data

@@ -47,7 +47,6 @@ def fetch_dvf_par_arrondissement() -> pd.DataFrame:
     )
 
     logger.info("DVF → Téléchargement fichier national géolocalisé (streaming)…")
-    logger.info("Fichier ~523 MB compressé — peut prendre 5–15 min selon la connexion.")
 
     tmp_path = None
     try:
