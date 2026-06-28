@@ -65,7 +65,7 @@ def main():
     logger.info("PIPELINE TERMINÉ")
     logger.info(f"Durée totale : {duration:.1f}s")
     logger.info("Données disponibles dans : data/gold/arrondissements_enrichis.json")
-    logger.info("Lancer l'API : uvicorn api.main:app --reload --port 8000")
+    logger.info("Lancer l'API : uvicorn api.main:app --reload --port 8001")
     logger.info("=" * 60)
 
 

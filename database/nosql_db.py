@@ -1,11 +1,6 @@
 """
 Base non relationnelle TinyDB — Urban Data Explorer (C1.2)
 Document store JSON : profils arrondissements + logs pipeline.
-
-TinyDB est une base orientée documents (NoSQL) pure Python.
-Chaque collection est un fichier JSON ; chaque entrée est un document libre.
-Cas d'usage : données semi-structurées à schéma variable (prix_medians imbriqués,
-repartition_pieces variable, logs d'exécution).
 """
 from tinydb import TinyDB, Query
 from pathlib import Path

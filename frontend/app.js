@@ -6,7 +6,7 @@
 
 
 const API_BASE = ["localhost", "127.0.0.1", ""].includes(window.location.hostname)
-  ? "http://localhost:8000"
+  ? "http://localhost:8001"
   : "https://urban-data-explorer-1.onrender.com";
 const ANNEES = [2021, 2022, 2023, 2024, 2025];
 
@@ -283,7 +283,7 @@ function onClickArr(_e, feature) {
       state.compareArr = [];
     } else {
       document.getElementById("compare-hint").textContent =
-        `${ordinal(arrNum)} sélectionné — cliquez un 2ème arrondissement`;
+        `${ordinal(arrNum)} sélectionné  cliquez un 2ème arrondissement`;
     }
     return;
   }
@@ -343,6 +343,8 @@ function showDetailPanel(d) {
   renderChartPieces(d);
 }
 
+// visuel courbe evolution prix/m²
+
 function renderChartTimeline(d) {
   const ctx = document.getElementById("chart-timeline").getContext("2d");
   if (chartTimeline) chartTimeline.destroy();
@@ -370,7 +372,7 @@ function renderChartTimeline(d) {
       responsive: true, maintainAspectRatio: true,
       plugins: {
         legend: { display: false },
-        title: { display: true, text: `Évolution prix/m² — ${d.nom}`, font: { size: 11, weight: "600" }, color: "#1a1f36" },
+        title: { display: true, text: `Évolution prix/m²  ${d.nom}`, font: { size: 11, weight: "600" }, color: "#1a1f36" },
         tooltip: { callbacks: { label: ctx => `${ctx.parsed.y.toLocaleString("fr-FR")} €/m²` } },
       },
       scales: {
@@ -380,7 +382,7 @@ function renderChartTimeline(d) {
     },
   });
 }
-
+// visuel camembert  répartition typologies logements
 function renderChartPieces(d) {
   const ctx = document.getElementById("chart-pieces").getContext("2d");
   if (chartPieces) chartPieces.destroy();
@@ -552,7 +554,7 @@ function showComparison(num1, num2) {
     },
   });
 
-  // Radar
+  // Radar dans le mode comparaison
   const ctxR = document.getElementById("chart-compare-radar").getContext("2d");
   if (chartCompareRadar) chartCompareRadar.destroy();
 

@@ -90,7 +90,7 @@ run_pipeline() {
 run_api() {
     header "API FASTAPI"
 
-    PORT="${PORT:-8000}"
+    PORT="${PORT:-8001}"
 
     # Tuer un éventuel processus sur ce port
     if lsof -ti tcp:"$PORT" &>/dev/null; then
@@ -146,7 +146,7 @@ usage() {
     echo ""
     echo "  Commandes :"
     echo -e "    ${GREEN}pipeline${NC}   Exécute Bronze → Silver → Gold → SQL/NoSQL"
-    echo -e "    ${GREEN}api${NC}        Démarre l'API FastAPI (port 8000)"
+    echo -e "    ${GREEN}api${NC}        Démarre l'API FastAPI (port 8001)"
     echo -e "    ${GREEN}all${NC}        Pipeline + API (enchainés)"
     echo -e "    ${GREEN}schedule${NC}   Planifie la pipeline chaque dimanche à 02h00 (cron)"
     echo -e "    ${GREEN}reset${NC}      Supprime les données régénérables"

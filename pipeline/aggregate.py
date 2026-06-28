@@ -184,7 +184,7 @@ def merge_gold_table(
                 if "gini" in row.columns:
                     base["gini"] = float(row["gini"].iloc[0])
 
-        # Logements sociaux — nombre depuis OpenData Paris, taux depuis RPLS 2022
+        # Logements sociaux  nombre depuis OpenData Paris, taux depuis RPLS 2022
         if logsoc is not None:
             logsoc_counts = aggregate_logements_sociaux(logsoc)
             if logsoc_counts.get(arr):
@@ -194,7 +194,7 @@ def merge_gold_table(
 
         base["variation_pct"] = calculer_variation(prix_medians, arr) or base.get("variation_pct")
 
-        # Criminalité SSMSI — taux réel par arrondissement
+        # Criminalité SSMSI  taux réel par arrondissement
         if crimes is not None and not crimes.empty and "crimes_pour_mille" in crimes.columns:
             if "arrondissement" in crimes.columns:
                 row_c = crimes[crimes["arrondissement"] == arr]
@@ -224,7 +224,7 @@ def merge_gold_table(
 def export_gold(arrondissements: list) -> None:
     """Exporte la couche gold en JSON + Parquet + GeoJSON enrichi."""
     metadata = {
-        "description": "Données agrégées marché immobilier Paris — couche Gold",
+        "description": "Données agrégées marché immobilier Paris  couche Gold",
         "sources": [
             "DVF (data.gouv.fr)",
             "OpenData Paris",
@@ -329,7 +329,7 @@ def run_aggregation() -> list:
     export_gold(arrondissements)
 
     # ── Bases de données ───────────────────────────────────────────────────────
-    # SQL (SQLite) — données structurées avec schéma relationnel (C1.1)
+    # SQL (SQLite)  données structurées avec schéma relationnel 
     try:
         from database.sql_db import write_gold_to_sql
         write_gold_to_sql(arrondissements)
@@ -338,7 +338,7 @@ def run_aggregation() -> list:
     except Exception as exc:
         logger.error(f"Erreur écriture SQL : {exc}")
 
-    # NoSQL (TinyDB) — profils documents JSON + log pipeline (C1.2)
+    # NoSQL (TinyDB)  profils documents JSON + log pipeline 
     try:
         from database.nosql_db import write_profiles, log_pipeline_run
         write_profiles(arrondissements)

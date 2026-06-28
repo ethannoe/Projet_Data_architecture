@@ -207,6 +207,3 @@ Le manifest `data/bronze/manifest.json` enregistre pour chaque source :
 - Nombre de lignes récupérées
 - Statut (ok / erreur)
 
----
-
-*Urban Data Explorer — Meriem Bennacer — 2026*

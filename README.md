@@ -115,15 +115,15 @@ Le pipeline récupère les données depuis les APIs publiques, les nettoie et pr
 
 ```bash
 cd urban-data-explorer
-uvicorn api.main:app --reload --port 8000
+uvicorn api.main:app --reload --port 8001
 ```
 
-L'API est disponible sur `http://localhost:8000`
-Documentation interactive : `http://localhost:8000/docs`
+L'API est disponible sur `http://localhost:8001`
+Documentation interactive : `http://localhost:8001/docs`
 
 ### 4. Ouvrir le dashboard
 
-Ouvrir `frontend/index.html` directement dans un navigateur **ou** accéder à `http://localhost:8000/app` une fois l'API démarrée.
+Ouvrir `frontend/index.html` directement dans un navigateur **ou** accéder à `http://localhost:8001/app` une fois l'API démarrée.
 
 ---
 
@@ -230,6 +230,3 @@ Modifier `API_BASE` dans `app.js` pour pointer vers l'URL de production.
 ---
 
 *Sources : DVF data.gouv.fr · OpenData Paris · INSEE Filosofi 2020 · SSMSI*
-# Projet_Data_architecture
-# Projet_Data_architecture
-# Projet_Data_architecture
