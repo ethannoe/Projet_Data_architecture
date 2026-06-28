@@ -217,8 +217,6 @@ def fetch_crimes_paris() -> pd.DataFrame:
     """
     Délinquance par commune — SSMSI via data.gouv.fr (fichier gzip).
     Filtre : département 75 (Paris).
-    Note : la base SSMSI agrège Paris en commune unique (75056),
-           pas par arrondissement.
     """
     logger.info("Crimes & délits → SSMSI data.gouv.fr (gzip)…")
     url = (
