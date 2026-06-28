@@ -5,7 +5,9 @@ Bases : SQLite (SQL, C1.1) + TinyDB (NoSQL, C1.2)
 """
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -15,6 +17,26 @@ import json
 import logging
 import requests as _requests
 from typing import Optional
+
+
+def _int(value: Optional[str], default: Optional[int] = None) -> Optional[int]:
+    """Parse un query param string en int, retourne default si invalide."""
+    if value is None:
+        return default
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return default
+
+
+def _float(value: Optional[str], default: Optional[float] = None) -> Optional[float]:
+    """Parse un query param string en float, retourne default si invalide."""
+    if value is None:
+        return default
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return default
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +79,18 @@ app = FastAPI(
 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    messages = []
+    for error in exc.errors():
+        loc = " → ".join(str(p) for p in error["loc"] if p not in ("body", "query", "path"))
+        messages.append(f"{loc}: {error['msg']}" if loc else error["msg"])
+    return JSONResponse(
+        status_code=400,
+        content={"detail": "Paramètres invalides", "erreurs": messages},
+    )
 
 app.add_middleware(
     CORSMiddleware,
@@ -129,12 +163,13 @@ def get_arrondissement(request: Request, num: int):
 
 @app.get("/prix", tags=["prix"])
 @limiter.limit("60/minute")
-def get_prix(request: Request, annee: Optional[int] = Query(None, description="Année (2021-2025)")):
+def get_prix(request: Request, annee: Optional[str] = Query(None, description="Année (2021-2025)")):
     """
     Prix médians par arrondissement.
     Sans paramètre → toutes les années.
     Avec ?annee=2023 → prix 2023 uniquement.
     """
+    annee = _int(annee)
     data = load_gold()
     result = []
     for a in data["arrondissements"]:
@@ -172,12 +207,13 @@ def get_prix_arrondissement(request: Request, num: int):
 
 @app.get("/timeline", tags=["timeline"])
 @limiter.limit("60/minute")
-def get_timeline(request: Request, arr: Optional[int] = Query(None, description="Numéro d'arrondissement (1-20)")):
+def get_timeline(request: Request, arr: Optional[str] = Query(None, description="Numéro d'arrondissement (1-20)")):
     """
     Évolution temporelle des prix 2021-2025.
     Sans paramètre → moyenne Paris.
     Avec ?arr=6 → arrondissement spécifique.
     """
+    arr = _int(arr)
     data = load_gold()
 
     if arr:
@@ -215,12 +251,16 @@ def get_timeline(request: Request, arr: Optional[int] = Query(None, description=
 @limiter.limit("60/minute")
 def comparer(
     request: Request,
-    arr1: int = Query(..., description="Premier arrondissement"),
-    arr2: int = Query(..., description="Deuxième arrondissement"),
+    arr1: Optional[str] = Query(None, description="Premier arrondissement (1-20)"),
+    arr2: Optional[str] = Query(None, description="Deuxième arrondissement (1-20)"),
 ):
     """Compare deux arrondissements sur tous les indicateurs."""
-    a1 = get_arr(arr1)
-    a2 = get_arr(arr2)
+    n1 = _int(arr1)
+    n2 = _int(arr2)
+    if n1 is None or n2 is None:
+        raise HTTPException(status_code=400, detail="Les paramètres arr1 et arr2 (entiers 1-20) sont requis. Ex: /comparaison?arr1=6&arr2=16")
+    a1 = get_arr(n1)
+    a2 = get_arr(n2)
 
     indicateurs = [
         "prix_medians", "logements_sociaux_pct", "revenu_median_uc",
@@ -450,31 +490,35 @@ def nosql_profile(request: Request, num: int):
 @limiter.limit("60/minute")
 def nosql_search(
     request: Request,
-    min_prix: Optional[float] = Query(None, description="Prix/m² minimum"),
-    max_prix: Optional[float] = Query(None, description="Prix/m² maximum"),
-    annee: int = Query(2023, description="Année de référence"),
+    min_prix: Optional[str] = Query(None, description="Prix/m² minimum"),
+    max_prix: Optional[str] = Query(None, description="Prix/m² maximum"),
+    annee: Optional[str] = Query("2023", description="Année de référence"),
 ):
     """
     Recherche documentaire NoSQL par plage de prix pour une année donnée.
     Démontre une requête sur champ imbriqué (prix_medians[annee]) — naturelle en NoSQL.
     """
+    annee_int = _int(annee, default=2023)
+    min_prix_f = _float(min_prix)
+    max_prix_f = _float(max_prix)
     try:
         from database.nosql_db import search_profiles
-        results = search_profiles(min_prix, max_prix, annee)
-        return {"source": "TinyDB (NoSQL)", "annee": annee, "résultats": results}
+        results = search_profiles(min_prix_f, max_prix_f, annee_int)
+        return {"source": "TinyDB (NoSQL)", "annee": annee_int, "résultats": results}
     except Exception as exc:
         raise HTTPException(status_code=503, detail=f"Base NoSQL indisponible : {exc}")
 
 
 @app.get("/nosql/pipeline-logs", tags=["NoSQL — base documentaire"])
 @limiter.limit("60/minute")
-def nosql_pipeline_logs(request: Request, limit: int = Query(10, description="Nombre de logs à retourner")):
+def nosql_pipeline_logs(request: Request, limit: Optional[str] = Query("10", description="Nombre de logs à retourner")):
     """
     Retourne les derniers logs d'exécution du pipeline (TinyDB).
     Démontre le stockage de documents à schéma variable (logs d'événements).
     """
+    limit_int = _int(limit, default=10)
     try:
         from database.nosql_db import get_pipeline_logs
-        return {"source": "TinyDB (NoSQL)", "logs": get_pipeline_logs(limit)}
+        return {"source": "TinyDB (NoSQL)", "logs": get_pipeline_logs(limit_int)}
     except Exception as exc:
         raise HTTPException(status_code=503, detail=f"Base NoSQL indisponible : {exc}")
